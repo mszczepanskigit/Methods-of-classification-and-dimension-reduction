@@ -8,7 +8,6 @@ def reconstruct(u, s, vt, p):
 
 
 if __name__ == "__main__":
-
     image_1 = np.array(imageio.imread('../Images/baboon_color.bmp', mode='RGB'))  # 500x480
     image_2 = np.array(imageio.imread('../Images/cells2.jpg', mode="RGB"))  # 420x321
     image_3 = np.array(imageio.imread('../Images/einstein.jpg', mode="RGB"))  # 186x182
