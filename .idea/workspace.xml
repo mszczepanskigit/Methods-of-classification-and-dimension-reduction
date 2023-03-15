@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea9995ab-5078-4e5a-b95b-fe40f24d6635" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Problems_1/problem1_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Problems_1/problem1_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Problems_2/problem2_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Problems_2/problem2_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Problems_2/problem2_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Problems_2/problem2_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/links.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/movies.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/ratings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/ratings.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/tags.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +25,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -38,6 +45,11 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\MyOwnThings\Python_Projects\Methods-of-classification-and-dimension-reduction\Project_1" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.problem2_2">
     <configuration name="problem1_1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -143,5 +155,19 @@
       <updated>1677708976311</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.csv" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
