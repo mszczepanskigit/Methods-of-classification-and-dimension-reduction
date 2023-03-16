@@ -71,6 +71,7 @@ if __name__ == "__main__":
         # print(matrix.shape) # = (610, 193609)
         for row in ratings:
             matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2]
+        matrix = matrix.astype('uint8')
         print(matrix) # it's filled
 
         # Proceeding

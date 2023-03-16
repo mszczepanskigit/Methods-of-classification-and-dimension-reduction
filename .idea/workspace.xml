@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea9995ab-5078-4e5a-b95b-fe40f24d6635" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/README.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/links.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/movies.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/ratings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/ratings.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/ml-latest-small/tags.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
