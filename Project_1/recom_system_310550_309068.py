@@ -62,10 +62,7 @@ if __name__ == "__main__":
     alg = str(args.alg)
     result_file = args.result
 
-    with open('./ratings.csv', 'r') as ratings, \
-            open(f'{tests_file}', 'w') as test_file, \
-            open(f'{trains_file}', 'w') as train_file:
-        ratings = np.genfromtxt(ratings, delimiter=',')[1:]
+    ratings = np.genfromtxt(ratings, delimiter=',')[1:]
 
         matrix = np.zeros((int(np.max(ratings[:, 0])), int(np.max(ratings[:, 1]))))
         # print(matrix.shape) # = (610, 193609)
@@ -73,21 +70,30 @@ if __name__ == "__main__":
             matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2]
         # matrix = matrix.astype('uint8')
         print(matrix)  # it's filled
-        """test_file.write("userId,movieId,rating,timestamp\n")
+        matrixdf = pd.DataFrame(matrix)
+        matrixdf[matrixdf==0] = np.nan
+        matrixdf = matrixdf.dropna(axis=1,how='all')
+        matrix = matrixdf.to_numpy(copy=True, na_value=0)
+        test_file.write("userId,movieId,rating,timestamp\n")
         train_file.write("userId,movieId,rating,timestamp\n")
+        df_train = np.zeros(matrix.shape)
+        df_test = np.zeros(matrix.shape)
         i = 1
+        # w plikach zapisane indeksy movie jako indeksy pythonowe (od 0)
         for user in matrix:
             movie_temp = [movieID for movieID in range(len(user)) if matrix[i - 1, movieID] > 0]
             train = rd.sample(movie_temp, 1 + math.floor(0.9 * len(movie_temp)))
-            train.sort()
+            train.sort()           
+            df_train[i-1,train] = 1
             test = list(set(movie_temp).difference(set(train)))
             test.sort()
+            df_test[i-1,test] = 1
             for train_movie in train:
                 train_file.write(f"{i},{train_movie},{matrix[i - 1, train_movie]},1\n")
             for test_movie in test:
                 test_file.write(f"{i},{test_movie},{matrix[i - 1, test_movie]},1\n")
-            i += 1"""
-
+            i += 1
+            
         # Proceeding
         if alg == "NMF":
             result = len(alg)
