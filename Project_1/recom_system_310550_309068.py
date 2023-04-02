@@ -5,11 +5,11 @@ from sklearn.decomposition import TruncatedSVD
 import sys
 import random as rd
 import math
+import pandas as pd
 
 """
-Questions:
-1. Strona 3 i result_file
-2. Wywoływanie plików z command line, czy będą one w obecnym directory?
+Execution:
+python recom_system_310550_309068.py -tr train_x -te test_x -a SVD1 -r yes.txt
 """
 
 
@@ -55,57 +55,61 @@ def SGD():
 
 
 if __name__ == "__main__":
-    rd.seed(0)
     args = parsing()
     trains_file = args.train
     tests_file = args.test
     alg = str(args.alg)
     result_file = args.result
 
-    ratings = np.genfromtxt(ratings, delimiter=',')[1:]
+    with open('./ratings.csv', 'r') as ratings, \
+            open(f'{tests_file}', 'r') as test_file, \
+            open(f'{trains_file}', 'r') as train_file:
+        ratings = np.genfromtxt(ratings, delimiter=',')[1:] # Opening files
 
         matrix = np.zeros((int(np.max(ratings[:, 0])), int(np.max(ratings[:, 1]))))
         # print(matrix.shape) # = (610, 193609)
+        list_for_movies = []
+        # there is 9724 unique movieID's
         for row in ratings:
-            matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2]
+            matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2] # Filling matrix
+            if row[1] not in list_for_movies:
+                list_for_movies.append(int(row[1]))
         # matrix = matrix.astype('uint8')
-        print(matrix)  # it's filled
-        matrixdf = pd.DataFrame(matrix)
-        matrixdf[matrixdf==0] = np.nan
-        matrixdf = matrixdf.dropna(axis=1,how='all')
-        matrix = matrixdf.to_numpy(copy=True, na_value=0)
-        test_file.write("userId,movieId,rating,timestamp\n")
-        train_file.write("userId,movieId,rating,timestamp\n")
-        df_train = np.zeros(matrix.shape)
-        df_test = np.zeros(matrix.shape)
-        i = 1
-        # w plikach zapisane indeksy movie jako indeksy pythonowe (od 0)
-        for user in matrix:
-            movie_temp = [movieID for movieID in range(len(user)) if matrix[i - 1, movieID] > 0]
-            train = rd.sample(movie_temp, 1 + math.floor(0.9 * len(movie_temp)))
-            train.sort()           
-            df_train[i-1,train] = 1
-            test = list(set(movie_temp).difference(set(train)))
-            test.sort()
-            df_test[i-1,test] = 1
-            for train_movie in train:
-                train_file.write(f"{i},{train_movie},{matrix[i - 1, train_movie]},1\n")
-            for test_movie in test:
-                test_file.write(f"{i},{test_movie},{matrix[i - 1, test_movie]},1\n")
-            i += 1
-            
-        # Proceeding
-        if alg == "NMF":
-            result = len(alg)
-        elif alg == "SVD1":
-            result = len(alg)
-        elif alg == "SVD2":
-            result = len(alg) + 1
-        elif alg == "SGD":
-            result = len(alg) + 2
-        else:
-            sys.exit("Something went wrong.")
+        list_for_movies.sort()
+        dict_for_movies = {i: list_for_movies[i] for i in range(len(list_for_movies))} # May be usefull
+        # print(dict_for_movies)
 
-        # End of the script and saving a result
-        with open(f'{result_file}', 'w') as res_file:
-            res_file.write(f"{result}")
+        pointer_train = np.zeros(matrix.shape)
+        for row in train_file:
+            pointer_train[int(row[0]) - 1, int(row[1]) - 1] = 1 # Creating mask for training file
+
+        pointer_test = np.zeros(matrix.shape)
+        for row in test_file:
+            pointer_test[int(row[0]) - 1, int(row[1]) - 1] = 1 # Creating mask for test file
+
+        nonzero_indices = np.nonzero(matrix)
+        nonempty_columns = np.unique(nonzero_indices[1])
+        empty_columns = list(set(range(matrix.shape[1])) - set(nonempty_columns)) # Searching for empty columns
+
+        matrix_small = np.delete(matrix, empty_columns, axis=1) # Removing empty columns in main matrix
+        pointer_train_small = np.delete(pointer_train, empty_columns, axis=1) # Removing empty columns in train matrix
+        pointer_test_small = np.delete(pointer_test, empty_columns, axis=1) # Removing empty columns in test matrix
+        print(matrix_small.shape)  # = (610, 9724)
+        print(pointer_train_small.shape)
+        print(pointer_test_small.shape)
+
+    # Proceeding
+    if alg == "NMF":
+        result = len(alg)
+    elif alg == "SVD1":
+        result = len(alg)
+    elif alg == "SVD2":
+        result = len(alg) + 1
+    elif alg == "SGD":
+        result = len(alg) + 2
+    else:
+        sys.exit("Something went wrong.")
+
+    # End of the script and saving a result
+    with open(f'{result_file}', 'w') as res_file:
+        res_file.write(f"{result}")
