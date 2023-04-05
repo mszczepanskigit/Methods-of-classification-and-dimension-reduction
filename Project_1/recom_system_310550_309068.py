@@ -53,6 +53,11 @@ def SVD2(matrixx, n_componentss, random_statee, stopp):
 def SGD():
     pass
 
+def RMSE2(matrix, test, test_mask):
+    result = test - np.multiply(matrix, test_mask)
+    result = np.sqrt(np.sum(result**2) / np.sum(test_mask))
+    return result
+
 # output: Z' matrix, test_matrix, test_mask
 def RMSE(output, test_matrix, test_mask):
     output_small = np.zeros(test_mask.shape)
@@ -76,6 +81,8 @@ if __name__ == "__main__":
             open(f'{tests_file}', 'r') as test_file, \
             open(f'{trains_file}', 'r') as train_file:
         ratings = np.genfromtxt(ratings, delimiter=',')[1:] # Opening files
+        train_file = np.genfromtxt(train_file, delimiter=',')[1:]
+        test_file = np.genfromtxt(test_file, delimiter=',')[1:]
 
         matrix = np.zeros((int(np.max(ratings[:, 0])), int(np.max(ratings[:, 1]))))
         # print(matrix.shape) # = (610, 193609)
@@ -91,23 +98,31 @@ if __name__ == "__main__":
         # print(dict_for_movies)
 
         pointer_train = np.zeros(matrix.shape)
+        train = np.zeros(matrix.shape)
         for row in train_file:
             pointer_train[int(row[0]) - 1, int(row[1]) - 1] = 1 # Creating mask for training file
+            train[int(row[0]) - 1, int(row[1]) - 1] = row[2]  # Creating training array
 
         pointer_test = np.zeros(matrix.shape)
+        test = np.zeros(matrix.shape)
         for row in test_file:
             pointer_test[int(row[0]) - 1, int(row[1]) - 1] = 1 # Creating mask for test file
+            test[int(row[0]) - 1, int(row[1]) - 1] = row[2]  # Creating test array
 
         nonzero_indices = np.nonzero(matrix)
         nonempty_columns = np.unique(nonzero_indices[1])
         empty_columns = list(set(range(matrix.shape[1])) - set(nonempty_columns)) # Searching for empty columns
 
         matrix_small = np.delete(matrix, empty_columns, axis=1) # Removing empty columns in main matrix
-        pointer_train_small = np.delete(pointer_train, empty_columns, axis=1) # Removing empty columns in train matrix
-        pointer_test_small = np.delete(pointer_test, empty_columns, axis=1) # Removing empty columns in test matrix
+        pointer_train_small = np.delete(pointer_train, empty_columns, axis=1) # Removing empty columns in mask matrix
+        pointer_test_small = np.delete(pointer_test, empty_columns, axis=1) # Removing empty columns in mask matrix
+        train_small = np.delete(train, empty_columns, axis=1)  # Removing empty columns in train matrix
+        test_small = np.delete(test, empty_columns, axis=1)  # Removing empty columns in test matrix
         print(matrix_small.shape)  # = (610, 9724)
         print(pointer_train_small.shape)
         print(pointer_test_small.shape)
+        print(train_small.shape)
+        print(test_small.shape)
 
     # Proceeding
     if alg == "NMF":
