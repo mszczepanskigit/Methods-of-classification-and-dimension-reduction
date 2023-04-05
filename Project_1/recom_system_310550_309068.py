@@ -53,6 +53,17 @@ def SVD2(matrixx, n_componentss, random_statee, stopp):
 def SGD():
     pass
 
+# output: Z' matrix, test_matrix, test_mask
+def RMSE(output, test_matrix, test_mask):
+    output_small = np.zeros(test_mask.shape)
+    test_ile = 0
+    rmse_tmp = 0
+    for i in range(output_small.shape[0]):
+        output_small[i,] = output[i,test_mask[i,]==1]
+        test_ile = test_ile + int(np.sum(test_mask[i,]))
+        rmse_tmp = rmse_tmp + np.sum(np.power(output_small[i,]-test_matrix[i,],2))
+    rmse = math.sqrt(1/test_ile*rmse_tmp)
+    return rmse
 
 if __name__ == "__main__":
     args = parsing()
