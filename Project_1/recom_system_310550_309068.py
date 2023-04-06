@@ -143,16 +143,15 @@ def fill_missing(matrix_data, method=0, column=0):
     elif method == 5:
         for row in range(matrix_data.shape[0]):
             frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
-            non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+            non_empty = np.floor(list(matrix_data[row,matrix_data[row,]!=0]))
             #frequency['0'] = frequency['0']+non_empty.count(0)
             frequency['1'] = frequency['1']+non_empty.count(1)
             frequency['2'] = frequency['2']+non_empty.count(2)
             frequency['3'] = frequency['3']+non_empty.count(3)
             frequency['4'] = frequency['4']+non_empty.count(4)
             frequency['5'] = frequency['5']+non_empty.count(5)
-        for key in frequency.keys():
-            frequency[key] = frequency[key]/np.sum(list(frequency.values()))
-        for row in range(matrix_data.shape[0]):
+            for key in frequency.keys():
+                frequency[key] = frequency[key]/np.sum(list(frequency.values()))
             matrix_data[row, matrix_data[row,] == 0] = np.random.choice(np.array([0,1,2,3,4,5]),matrix_data[row, matrix_data[row,] == 0].size,p=list(frequency.values()))
         return matrix_data
     
@@ -162,7 +161,7 @@ def fill_missing(matrix_data, method=0, column=0):
             matrix_data = matrix_data.transpose((1, 0))
             for row in range(matrix_data.shape[0]):
                 frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
-                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                non_empty = np.floor(list(matrix_data[row,matrix_data[row,]!=0]))
                 #frequency['0'] = frequency['0']+non_empty.count(0)
                 frequency['1'] = frequency['1']+non_empty.count(1)
                 frequency['2'] = frequency['2']+non_empty.count(2)
@@ -175,7 +174,7 @@ def fill_missing(matrix_data, method=0, column=0):
         elif column == 0:
             for row in range(matrix_data.shape[0]):
                 frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
-                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                non_empty = np.floor(list(matrix_data[row,matrix_data[row,]!=0]))
                 #frequency['0'] = frequency['0']+non_empty.count(0)
                 frequency['1'] = frequency['1']+non_empty.count(1)
                 frequency['2'] = frequency['2']+non_empty.count(2)
@@ -188,7 +187,7 @@ def fill_missing(matrix_data, method=0, column=0):
         else:
             frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
             for row in range(matrix_data.shape[0]):
-                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                non_empty = np.floor(list(matrix_data[row,matrix_data[row,]!=0]))
                 #frequency['0'] = frequency['0']+non_empty.count(0)
                 frequency['1'] = frequency['1']+non_empty.count(1)
                 frequency['2'] = frequency['2']+non_empty.count(2)
@@ -198,7 +197,7 @@ def fill_missing(matrix_data, method=0, column=0):
             most_frequent = list(frequency.values()).index(max(frequency.values()))
             for row in range(matrix_data.shape[0]):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
-            return matrix_data  
+            return matrix_data
     
 
 if __name__ == "__main__":
