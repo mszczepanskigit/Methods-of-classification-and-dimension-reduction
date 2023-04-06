@@ -198,7 +198,8 @@ def fill_missing(matrix_data, method=0, column=0):
             for row in range(matrix_data.shape[0]):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data
-    
+    else:
+        pass    
 
 if __name__ == "__main__":
     args = parsing()
