@@ -70,6 +70,17 @@ def RMSE(output, test_matrix, test_mask):
     rmse = math.sqrt(1/test_ile*rmse_tmp)
     return rmse
 
+'''
+Method:
+    - 0 - fill with zeros
+    - 1 - fill with mean (row/column/matrix)
+    - 2 - fill with median (row/column/matrix)
+    - 3 - fill with random variable from N(mu,sd)
+    - 4 - fill with random variable from N(mu,sd) but truncated (0,5)
+    - 5 - fill with random variable, probs based on data
+    - 6 - fill with the most frequent value, consider floor(r) (row/column/matrix)
+'''
+
 def fill_missing(matrix_data, method=0, column=0):
     if method == 0:
         return matrix_data
@@ -86,7 +97,15 @@ def fill_missing(matrix_data, method=0, column=0):
                 non_empty = matrix_data[row,matrix_data[row,]!=0]
                 matrix_data[row, matrix_data[row,] == 0] = np.mean(non_empty)
             return matrix_data
-    
+        else:
+           mean_tmp = [] 
+           for row in range(matrix_data.shape[0]):
+                non_empty = matrix_data[row,matrix_data[row,]!=0]
+                mean_tmp.extend(non_empty)
+           for row in range(matrix_data.shape[0]):
+                matrix_data[row, matrix_data[row,] == 0] = np.mean(non_empty)
+           return matrix_data
+            
     elif method == 2:
         if column == 1:
             matrix_data = matrix_data.transpose((1, 0))
@@ -99,6 +118,14 @@ def fill_missing(matrix_data, method=0, column=0):
                 non_empty = matrix_data[row,matrix_data[row,]!=0]
                 matrix_data[row, matrix_data[row,] == 0] = np.median(non_empty)
             return matrix_data
+        else:
+           median_tmp = [] 
+           for row in range(matrix_data.shape[0]):
+                non_empty = matrix_data[row,matrix_data[row,]!=0]
+                median_tmp.extend(non_empty)
+           for row in range(matrix_data.shape[0]):
+                matrix_data[row, matrix_data[row,] == 0] = np.median(non_empty)
+           return matrix_data
         
     elif method == 3:
         for row in range(matrix_data.shape[0]):
@@ -112,7 +139,66 @@ def fill_missing(matrix_data, method=0, column=0):
             matrix_data[row, matrix_data[row,] == 0] = np.std(non_empty) * np.random.randn(1,len(matrix_data[row, matrix_data[row,] == 0])) + np.mean(non_empty)
             matrix_data[row, matrix_data[row,] > 5] = 5
         return matrix_data
+        
+    elif method == 5:
+        for row in range(matrix_data.shape[0]):
+            frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
+            non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+            #frequency['0'] = frequency['0']+non_empty.count(0)
+            frequency['1'] = frequency['1']+non_empty.count(1)
+            frequency['2'] = frequency['2']+non_empty.count(2)
+            frequency['3'] = frequency['3']+non_empty.count(3)
+            frequency['4'] = frequency['4']+non_empty.count(4)
+            frequency['5'] = frequency['5']+non_empty.count(5)
+        for key in frequency.keys():
+            frequency[key] = frequency[key]/np.sum(list(frequency.values()))
+        for row in range(matrix_data.shape[0]):
+            matrix_data[row, matrix_data[row,] == 0] = np.random.choice(np.array([0,1,2,3,4,5]),matrix_data[row, matrix_data[row,] == 0].size,p=list(frequency.values()))
+        return matrix_data
     
+    elif method == 6:
+        frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
+        if column == 1:
+            matrix_data = matrix_data.transpose((1, 0))
+            for row in range(matrix_data.shape[0]):
+                frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
+                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                #frequency['0'] = frequency['0']+non_empty.count(0)
+                frequency['1'] = frequency['1']+non_empty.count(1)
+                frequency['2'] = frequency['2']+non_empty.count(2)
+                frequency['3'] = frequency['3']+non_empty.count(3)
+                frequency['4'] = frequency['4']+non_empty.count(4)
+                frequency['5'] = frequency['5']+non_empty.count(5)
+                most_frequent = list(frequency.values()).index(max(frequency.values()))
+                matrix_data[row, matrix_data[row,] == 0] = most_frequent
+            return matrix_data.transpose((1, 0))
+        elif column == 0:
+            for row in range(matrix_data.shape[0]):
+                frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
+                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                #frequency['0'] = frequency['0']+non_empty.count(0)
+                frequency['1'] = frequency['1']+non_empty.count(1)
+                frequency['2'] = frequency['2']+non_empty.count(2)
+                frequency['3'] = frequency['3']+non_empty.count(3)
+                frequency['4'] = frequency['4']+non_empty.count(4)
+                frequency['5'] = frequency['5']+non_empty.count(5)
+                most_frequent = list(frequency.values()).index(max(frequency.values()))
+                matrix_data[row, matrix_data[row,] == 0] = most_frequent
+            return matrix_data
+        else:
+            frequency = {'0':0,'1':0,'2':0,'3':0,'4':0,'5':0}
+            for row in range(matrix_data.shape[0]):
+                non_empty = list(matrix_data[row,matrix_data[row,]!=0])
+                #frequency['0'] = frequency['0']+non_empty.count(0)
+                frequency['1'] = frequency['1']+non_empty.count(1)
+                frequency['2'] = frequency['2']+non_empty.count(2)
+                frequency['3'] = frequency['3']+non_empty.count(3)
+                frequency['4'] = frequency['4']+non_empty.count(4)
+                frequency['5'] = frequency['5']+non_empty.count(5)
+            most_frequent = list(frequency.values()).index(max(frequency.values()))
+            for row in range(matrix_data.shape[0]):
+                matrix_data[row, matrix_data[row,] == 0] = most_frequent
+            return matrix_data  
     
 
 if __name__ == "__main__":
