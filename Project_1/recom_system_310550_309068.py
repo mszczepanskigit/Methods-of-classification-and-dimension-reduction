@@ -70,18 +70,18 @@ def RMSE(output, test_matrix, test_mask):
     rmse = math.sqrt(1/test_ile*rmse_tmp)
     return rmse
 
-'''
-Method:
-    - 0 - fill with zeros
-    - 1 - fill with mean (row/column/matrix)
-    - 2 - fill with median (row/column/matrix)
-    - 3 - fill with random variable from N(mu,sd)
-    - 4 - fill with random variable from N(mu,sd) but truncated (0,5)
-    - 5 - fill with random variable, probs based on data
-    - 6 - fill with the most frequent value, consider floor(r) (row/column/matrix)
-'''
 
 def fill_missing(matrix_data, method=0, column=0):
+    '''
+    Method:
+        - 0 - fill with zeros
+        - 1 - fill with mean (row/column/matrix)
+        - 2 - fill with median (row/column/matrix)
+        - 3 - fill with random variable from N(mu,sd)
+        - 4 - fill with random variable from N(mu,sd) but truncated (0,5)
+        - 5 - fill with random variable, probs based on data
+        - 6 - fill with the most frequent value, consider floor(r) (row/column/matrix)
+    '''
     if method == 0:
         return matrix_data
     
