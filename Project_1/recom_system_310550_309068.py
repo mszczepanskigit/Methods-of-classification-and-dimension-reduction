@@ -5,7 +5,6 @@ from sklearn.decomposition import TruncatedSVD
 import sys
 import random as rd
 import math
-import pandas as pd
 
 """
 Execution:
@@ -53,22 +52,10 @@ def SVD2(matrixx, n_componentss, random_statee, stopp):
 def SGD():
     pass
 
-def RMSE2(matrix, test, test_mask):
+def RMSE(matrix, test, test_mask):
     result = test - np.multiply(matrix, test_mask)
     result = np.sqrt(np.sum(result**2) / np.sum(test_mask))
     return result
-
-# output: Z' matrix, test_matrix, test_mask
-def RMSE(output, test_matrix, test_mask):
-    output_small = np.zeros(test_mask.shape)
-    test_ile = 0
-    rmse_tmp = 0
-    for i in range(output_small.shape[0]):
-        output_small[i,] = output[i,test_mask[i,]==1]
-        test_ile = test_ile + int(np.sum(test_mask[i,]))
-        rmse_tmp = rmse_tmp + np.sum(np.power(output_small[i,]-test_matrix[i,],2))
-    rmse = math.sqrt(1/test_ile*rmse_tmp)
-    return rmse
 
 
 def fill_missing(matrix_data, method=0, column=0):
@@ -249,17 +236,23 @@ if __name__ == "__main__":
         pointer_test_small = np.delete(pointer_test, empty_columns, axis=1) # Removing empty columns in mask matrix
         train_small = np.delete(train, empty_columns, axis=1)  # Removing empty columns in train matrix
         test_small = np.delete(test, empty_columns, axis=1)  # Removing empty columns in test matrix
-        print(matrix_small.shape)  # = (610, 9724)
+        """print(matrix_small.shape)  # = (610, 9724)
         print(pointer_train_small.shape)
         print(pointer_test_small.shape)
         print(train_small.shape)
-        print(test_small.shape)
+        print(test_small.shape)"""
 
     # Proceeding
     if alg == "NMF":
         result = len(alg)
     elif alg == "SVD1":
-        result = len(alg)
+        matrix_temp = fill_missing(matrix_small)
+        for i in range(1, 15):
+            SVD = TruncatedSVD(n_components=i, n_iter=1, random_state=666)
+            X_svd = SVD.fit_transform(matrix_temp)
+            X_svd = SVD.inverse_transform(X_svd)
+            print(f"For n_comp: {i}, RMSE is {RMSE(X_svd, test_small, pointer_test_small)}")
+            result = len(alg)
     elif alg == "SVD2":
         result = len(alg) + 1
     elif alg == "SGD":
