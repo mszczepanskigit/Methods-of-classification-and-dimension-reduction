@@ -2,14 +2,17 @@ import argparse
 import numpy as np
 from sklearn.decomposition import NMF
 from sklearn.decomposition import TruncatedSVD
+from sklearn.exceptions import ConvergenceWarning
 import sys
 import random as rd
 import math
+import warnings
 
 """
 Execution:
 python recom_system_310550_309068.py -tr train_x -te test_x -a SVD1 -r yes.txt
 """
+
 
 
 def parsing():
@@ -244,22 +247,40 @@ if __name__ == "__main__":
 
     # Proceeding
     if alg == "NMF":
-        result = len(alg)
+        matrix_temp = fill_missing(matrix_small, method=0)
+        warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
+        for i in range(1, 20):
+            nmf = NMF(n_components=i, init='nndsvda', random_state=666, max_iter=200) # init = 'random', init = 'nndsvdar'
+            W = nmf.fit_transform(matrix_temp)
+            H = nmf.components_
+            X_nmf = np.dot(W,H)
+            rmse = RMSE(X_nmf, test_small, pointer_test_small)
+            print(f"For n_comp: {i}, RMSE is {rmse}")
+        result = rmse
+        """
+        Questions:
+        1. Zmienianie Init w NMF
+        2. Iteracje w NMF
+        3. Czy RMSE robić na jakichś round'ed danych? Bo póki co sprawdzałem bez
+        """
     elif alg == "SVD1":
-        matrix_temp = fill_missing(matrix_small)
-        for i in range(1, 15):
+        matrix_temp = fill_missing(matrix_small, method=6)
+        for i in range(1, 10):
             SVD = TruncatedSVD(n_components=i, n_iter=1, random_state=666)
             X_svd = SVD.fit_transform(matrix_temp)
             X_svd = SVD.inverse_transform(X_svd)
-            print(f"For n_comp: {i}, RMSE is {RMSE(X_svd, test_small, pointer_test_small)}")
-            result = len(alg)
+            rmse = RMSE(X_svd, test_small, pointer_test_small)
+            print(f"For n_comp: {i}, RMSE is {rmse}")
+        result = rmse
     elif alg == "SVD2":
+        matrix_temp = fill_missing(matrix_small, method=0)
         result = len(alg) + 1
     elif alg == "SGD":
+        matrix_temp = fill_missing(matrix_small, method=0)
         result = len(alg) + 2
     else:
         sys.exit("Something went wrong.")
 
-    # End of the script and saving a result
+    # End of the script and saving the result
     with open(f'{result_file}', 'w') as res_file:
         res_file.write(f"{result}")
