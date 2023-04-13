@@ -5,10 +5,14 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.exceptions import ConvergenceWarning
 import sys
 import warnings
+import matplotlib.pylab as plt
+import matplotlib as mpl
+
+mpl.rcParams.update(mpl.rcParamsDefault)
 
 """
 Execution:
-python recom_system_310550_309068.py -tr train_x -te test_x -a SVD1 -r yes.txt
+python testing.py -tr train_x -te test_x -a SVD1
 """
 
 
@@ -27,21 +31,17 @@ def parsing():
                         choices=["NMF", "SVD1", "SVD2", "SGD"],
                         help='NMF or SVD1 or SVD2 or SGD',
                         required=True)
-    parser.add_argument('--result',
-                        '-r',
-                        help='Result file in which there is final result of RMSE',
-                        default='result.txt')
     return parser.parse_args()
 
 
-def RMSE(matrix, test, test_mask):
-    result = np.round(2 * test) / 2 - np.multiply(matrix, test_mask)
-    result = np.sqrt(np.sum(result ** 2) / np.sum(test_mask))
-    return result
+def RMSE(matrixx, testt, test_mask):
+    resultt = np.round(2 * testt) / 2 - np.multiply(matrixx, test_mask)
+    resultt = np.sqrt(np.sum(resultt ** 2) / np.sum(test_mask))
+    return resultt
 
 
 def fill_missing(matrix_data, method=0, column=0):
-    '''
+    """
     Method:
         - 0 - fill with zeros
         - 1 - fill with mean (row/column/matrix)
@@ -50,7 +50,7 @@ def fill_missing(matrix_data, method=0, column=0):
         - 4 - fill with random variable from N(mu,sd) but truncated (0,5)
         - 5 - fill with random variable, probs based on data
         - 6 - fill with the most frequent value, consider floor(r) (row/column/matrix)
-    '''
+    """
     if method == 0:
         return matrix_data
 
@@ -58,8 +58,8 @@ def fill_missing(matrix_data, method=0, column=0):
         if column == 1:
             matrix_data = matrix_data.transpose((1, 0))
             for row in range(matrix_data.shape[0]):
-                non_empty = matrix_data[row, matrix_data[row,] != 0]
-                matrix_data[row, matrix_data[row,] == 0] = np.mean(non_empty)
+                non_empty = matrix_data[row, matrix_data[row, ] != 0]
+                matrix_data[row, matrix_data[row, ] == 0] = np.mean(non_empty)
             return matrix_data.transpose((1, 0))
         elif column == 0:
             for row in range(matrix_data.shape[0]):
@@ -180,66 +180,73 @@ if __name__ == "__main__":
     trains_file = args.train
     tests_file = args.test
     alg = str(args.alg)
-    result_file = args.result
 
     with open('./ratings.csv', 'r') as ratings, \
             open(f'{tests_file}', 'r') as test_file, \
             open(f'{trains_file}', 'r') as train_file:
-        ratings = np.genfromtxt(ratings, delimiter=',')[1:]  # Opening files
+        ratings = np.genfromtxt(ratings, delimiter=',')[1:]
         train_file = np.genfromtxt(train_file, delimiter=',')[1:]
         test_file = np.genfromtxt(test_file, delimiter=',')[1:]
 
         matrix = np.zeros((int(np.max(ratings[:, 0])), int(np.max(ratings[:, 1]))))
-        # print(matrix.shape) # = (610, 193609)
-        # there is 9724 unique movieID's
         for row in ratings:
-            matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2]  # Filling matrix
+            matrix[int(row[0]) - 1, int(row[1]) - 1] = row[2]
 
         pointer_train = np.zeros(matrix.shape)
         train = np.zeros(matrix.shape)
         for row in train_file:
-            pointer_train[int(row[0]) - 1, int(row[1]) - 1] = 1  # Creating mask for training file
-            train[int(row[0]) - 1, int(row[1]) - 1] = row[2]  # Creating training array
+            pointer_train[int(row[0]) - 1, int(row[1]) - 1] = 1
+            train[int(row[0]) - 1, int(row[1]) - 1] = row[2]
 
         pointer_test = np.zeros(matrix.shape)
         test = np.zeros(matrix.shape)
         for row in test_file:
-            pointer_test[int(row[0]) - 1, int(row[1]) - 1] = 1  # Creating mask for test file
-            test[int(row[0]) - 1, int(row[1]) - 1] = row[2]  # Creating test array
+            pointer_test[int(row[0]) - 1, int(row[1]) - 1] = 1
+            test[int(row[0]) - 1, int(row[1]) - 1] = row[2]
 
     nonzero_indices = np.nonzero(matrix)
     nonempty_columns = np.unique(nonzero_indices[1])
-    empty_columns = list(set(range(matrix.shape[1])) - set(nonempty_columns))  # Searching for empty columns
+    empty_columns = list(set(range(matrix.shape[1])) - set(nonempty_columns))
 
-    matrix_small = np.delete(matrix, empty_columns, axis=1)  # Removing empty columns in main matrix
-    pointer_train_small = np.delete(pointer_train, empty_columns, axis=1)  # Removing empty columns in mask matrix
-    pointer_test_small = np.delete(pointer_test, empty_columns, axis=1)  # Removing empty columns in mask matrix
-    train_small = np.delete(train, empty_columns, axis=1)  # Removing empty columns in train matrix
-    test_small = np.delete(test, empty_columns, axis=1)  # Removing empty columns in test matrix
-    """print(matrix_small.shape)  # = (610, 9724)
-    print(pointer_train_small.shape)
-    print(pointer_test_small.shape)
-    print(train_small.shape)
-    print(test_small.shape)"""
-    # Proceeding
+    matrix_small = np.delete(matrix, empty_columns, axis=1)
+    pointer_train_small = np.delete(pointer_train, empty_columns, axis=1)
+    pointer_test_small = np.delete(pointer_test, empty_columns, axis=1)
+    train_small = np.delete(train, empty_columns, axis=1)
+    test_small = np.delete(test, empty_columns, axis=1)
 
     if alg == "NMF":
-        matrix_temp = fill_missing(matrix_small, method=3)
+        matrix_temp = fill_missing(matrix_small, method=0)
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
-        nmf = NMF(n_components=9, init='nndsvda', random_state=666, max_iter=200)
-        W = nmf.fit_transform(matrix_temp)
-        H = nmf.components_
-        X_nmf = np.dot(W, H)
-        rmse = RMSE(X_nmf, test_small, pointer_test_small)
+        for i in range(1, 21):
+            nmf = NMF(n_components=i, init='nndsvda', random_state=666,
+                      max_iter=200)  # init = 'random', init = 'nndsvdar'
+            W = nmf.fit_transform(matrix_temp)
+            H = nmf.components_
+            X_nmf = np.dot(W, H)
+            rmse = RMSE(X_nmf, test_small, pointer_test_small)
+            print(f"For n_comp: {i}, RMSE is {rmse}")
         result = rmse
 
     elif alg == "SVD1":
-        matrix_temp = fill_missing(matrix_small, method=5)
-        SVD = TruncatedSVD(n_components=9, n_iter=1, random_state=666)
-        X_svd = SVD.fit_transform(matrix_temp)
-        X_svd = SVD.inverse_transform(X_svd)
-        rmse = RMSE(X_svd, test_small, pointer_test_small)
-        result = rmse
+        rmsess = []
+        matrix_temp = fill_missing(matrix_small, method=0)
+        rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
+        rmsess.append(rmse0)
+        # print(f"Without performing algorithm, RMSE is {rmse0}")
+        for i in range(1, 31):
+            SVD = TruncatedSVD(n_components=i, n_iter=1, random_state=666)
+            X_svd = SVD.fit_transform(matrix_temp)
+            X_svd = SVD.inverse_transform(X_svd)
+            rmse = RMSE(X_svd, test_small, pointer_test_small)
+            rmsess.append(rmse)
+            # print(f"For n_comp: {i}, RMSE is {rmse}")
+        plt.figure(1)
+        plt.scatter([x for x in range(31)], rmsess, color="green")
+        plt.title(r"RMSE for SVD1, Method 0, $1\leq r \leq 30$")
+        plt.xlabel(r"Level of truncation $r$")
+        plt.ylabel("RMSE")
+        plt.xticks(np.arange(0, 32, step=1))
+        plt.show()
 
     elif alg == "SVD2":
         matrix_temp = fill_missing(matrix_small, method=0)
@@ -252,6 +259,3 @@ if __name__ == "__main__":
     else:
         sys.exit("Something went wrong.")
 
-    # End of the script and saving the result
-    with open(f'{result_file}', 'w') as res_file:
-        res_file.write(f"{result}")
