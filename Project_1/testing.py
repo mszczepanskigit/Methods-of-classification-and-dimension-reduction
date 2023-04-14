@@ -239,7 +239,7 @@ if __name__ == "__main__":
             X_svd = SVD.inverse_transform(X_svd)
             rmse = RMSE(X_svd, test_small, pointer_test_small)
             rmsess.append(rmse)
-            # print(f"For n_comp: {i}, RMSE is {rmse}")
+            print(f"For n_comp: {i}, RMSE is {rmse}")
         plt.figure(1)
         plt.scatter([x for x in range(31)], rmsess, color="green")
         plt.title(r"RMSE for SVD1, Method 0, $1\leq r \leq 30$")
