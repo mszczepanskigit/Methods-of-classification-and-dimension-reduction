@@ -7,6 +7,7 @@ import sys
 import warnings
 import matplotlib.pylab as plt
 import matplotlib as mpl
+import copy as cp
 
 mpl.rcParams.update(mpl.rcParamsDefault)
 
