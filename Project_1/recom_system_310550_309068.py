@@ -96,12 +96,15 @@ def fill_missing(matrix_data, method=0, column=0):
                 matrix_data[row, matrix_data[row,] == 0] = np.median(non_empty)
             return matrix_data
 
+
     elif method == 3:
         for row in range(matrix_data.shape[0]):
             non_empty = matrix_data[row, matrix_data[row,] != 0]
             matrix_data[row, matrix_data[row,] == 0] = np.std(non_empty) * np.random.randn(1, len(
                 matrix_data[row, matrix_data[row,] == 0])) + np.mean(non_empty)
+            matrix_data[row, matrix_data[row,] < 0] = 0
         return matrix_data
+
 
     elif method == 4:
         for row in range(matrix_data.shape[0]):
@@ -109,6 +112,7 @@ def fill_missing(matrix_data, method=0, column=0):
             matrix_data[row, matrix_data[row,] == 0] = np.std(non_empty) * np.random.randn(1, len(
                 matrix_data[row, matrix_data[row,] == 0])) + np.mean(non_empty)
             matrix_data[row, matrix_data[row,] > 5] = 5
+            matrix_data[row, matrix_data[row,] < 0] = 0
         return matrix_data
 
     elif method == 5:

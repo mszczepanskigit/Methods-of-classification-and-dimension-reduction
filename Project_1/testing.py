@@ -101,6 +101,7 @@ def fill_missing(matrix_data, method=0, column=0):
             non_empty = matrix_data[row, matrix_data[row,] != 0]
             matrix_data[row, matrix_data[row,] == 0] = np.std(non_empty) * np.random.randn(1, len(
                 matrix_data[row, matrix_data[row,] == 0])) + np.mean(non_empty)
+            matrix_data[row, matrix_data[row,] < 0] = 0
         return matrix_data
 
     elif method == 4:
@@ -109,6 +110,7 @@ def fill_missing(matrix_data, method=0, column=0):
             matrix_data[row, matrix_data[row,] == 0] = np.std(non_empty) * np.random.randn(1, len(
                 matrix_data[row, matrix_data[row,] == 0])) + np.mean(non_empty)
             matrix_data[row, matrix_data[row,] > 5] = 5
+            matrix_data[row, matrix_data[row,] < 0] = 0
         return matrix_data
 
     elif method == 5:
@@ -215,7 +217,11 @@ if __name__ == "__main__":
     test_small = np.delete(test, empty_columns, axis=1)
 
     if alg == "NMF":
-        matrix_temp = fill_missing(matrix_small, method=0)
+        rmsess = []
+        matrix_temp = fill_missing(matrix_small, method=3)
+        rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
+        rmsess.append(rmse0)
+        # print(f"Without performing algorithm, RMSE is {rmse0}")
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
         for i in range(1, 21):
             nmf = NMF(n_components=i, init='nndsvda', random_state=666,
@@ -224,12 +230,19 @@ if __name__ == "__main__":
             H = nmf.components_
             X_nmf = np.dot(W, H)
             rmse = RMSE(X_nmf, test_small, pointer_test_small)
+            rmsess.append(rmse)
             print(f"For n_comp: {i}, RMSE is {rmse}")
-        result = rmse
+        plt.figure(1)
+        plt.scatter([x for x in range(21)], rmsess, color="blue")
+        plt.title(r"RMSE for NMF, Method 3, $1\leq r \leq 20$")
+        plt.xlabel(r"Level of truncation $r$")
+        plt.ylabel("RMSE")
+        plt.xticks(np.arange(0, 22, step=1))
+        plt.show()
 
     elif alg == "SVD1":
         rmsess = []
-        matrix_temp = fill_missing(matrix_small, method=0)
+        matrix_temp = fill_missing(matrix_small, method=1)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
         # print(f"Without performing algorithm, RMSE is {rmse0}")
@@ -240,9 +253,9 @@ if __name__ == "__main__":
             rmse = RMSE(X_svd, test_small, pointer_test_small)
             rmsess.append(rmse)
             print(f"For n_comp: {i}, RMSE is {rmse}")
-        plt.figure(1)
+        plt.figure(2)
         plt.scatter([x for x in range(31)], rmsess, color="green")
-        plt.title(r"RMSE for SVD1, Method 0, $1\leq r \leq 30$")
+        plt.title(r"RMSE for SVD1, Method 1, $1\leq r \leq 30$")
         plt.xlabel(r"Level of truncation $r$")
         plt.ylabel("RMSE")
         plt.xticks(np.arange(0, 32, step=1))
