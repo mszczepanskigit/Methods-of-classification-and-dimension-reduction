@@ -36,7 +36,7 @@ def parsing():
 
 
 def RMSE(matrixx, testt, test_mask):
-    resultt = np.round(2 * testt) / 2 - np.multiply(matrixx, test_mask)
+    resultt = testt - np.multiply(np.round(2 * matrixx) / 2, test_mask)
     resultt = np.sqrt(np.sum(resultt ** 2) / np.sum(test_mask))
     return resultt
 
@@ -45,12 +45,12 @@ def fill_missing(matrix_data, method=0, column=0):
     """
     Method:
         - 0 - fill with zeros
-        - 1 - fill with mean (row/column/matrix)
-        - 2 - fill with median (row/column/matrix)
-        - 3 - fill with random variable from N(mu,sd)
+        - 1 - fill with mean (row)
+        ****- 2 - fill with median (row/column/matrix)
+        ****- 3 - fill with random variable from N(mu,sd)
         - 4 - fill with random variable from N(mu,sd) but truncated (0,5)
         - 5 - fill with random variable, probs based on data
-        - 6 - fill with the most frequent value, consider floor(r) (row/column/matrix)
+        - 6 - fill with the most frequent value, consider floor(r) (----row-----/column/matrix)
     """
     if method == 0:
         return matrix_data
@@ -219,10 +219,10 @@ if __name__ == "__main__":
 
     if alg == "NMF":
         rmsess = []
-        matrix_temp = fill_missing(matrix_small, method=3)
+        matrix_temp = fill_missing(train_small, method=4)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
-        # print(f"Without performing algorithm, RMSE is {rmse0}")
+        print(f"Without performing algorithm, RMSE is {rmse0}")
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
         for i in range(1, 21):
             nmf = NMF(n_components=i, init='nndsvda', random_state=666,
@@ -235,7 +235,7 @@ if __name__ == "__main__":
             print(f"For n_comp: {i}, RMSE is {rmse}")
         plt.figure(1)
         plt.scatter([x for x in range(21)], rmsess, color="blue")
-        plt.title(r"RMSE for NMF, Method 3, $1\leq r \leq 20$")
+        plt.title(r"RMSE for NMF, Method 4, $1\leq r \leq 20$")
         plt.xlabel(r"Level of truncation $r$")
         plt.ylabel("RMSE")
         plt.xticks(np.arange(0, 22, step=1))
@@ -243,23 +243,23 @@ if __name__ == "__main__":
 
     elif alg == "SVD1":
         rmsess = []
-        matrix_temp = fill_missing(matrix_small, method=1)
+        matrix_temp = fill_missing(train_small, method=4)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
-        # print(f"Without performing algorithm, RMSE is {rmse0}")
-        for i in range(1, 31):
+        print(f"Without performing algorithm, RMSE is {rmse0}")
+        for i in range(1, 21):
             SVD = TruncatedSVD(n_components=i, n_iter=1, random_state=666)
             X_svd = SVD.fit_transform(matrix_temp)
             X_svd = SVD.inverse_transform(X_svd)
             rmse = RMSE(X_svd, test_small, pointer_test_small)
             rmsess.append(rmse)
-            print(f"For n_comp: {i}, RMSE is {rmse}")
+            #print(f"For n_comp: {i}, RMSE is {rmse}")
         plt.figure(2)
-        plt.scatter([x for x in range(31)], rmsess, color="green")
-        plt.title(r"RMSE for SVD1, Method 1, $1\leq r \leq 30$")
+        plt.scatter([x for x in range(21)], rmsess, color="green")
+        plt.title(r"RMSE for SVD1, Method 4, $1\leq r \leq 30$")
         plt.xlabel(r"Level of truncation $r$")
         plt.ylabel("RMSE")
-        plt.xticks(np.arange(0, 32, step=1))
+        plt.xticks(np.arange(0, 22, step=1))
         plt.show()
 
     elif alg == "SVD2":
