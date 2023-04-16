@@ -133,18 +133,17 @@ def fill_missing(matrix_data, method=0, column=0):
         return matrix_data
 
     elif method == 6:
-        frequency = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
         if column == 1:
             matrix_data = matrix_data.transpose((1, 0))
             for row in range(matrix_data.shape[0]):
                 frequency = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
                 non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
                 # frequency['0'] = frequency['0']+non_empty.count(0)
-                frequency['1'] = frequency['1'] + non_empty.count(1)
-                frequency['2'] = frequency['2'] + non_empty.count(2)
-                frequency['3'] = frequency['3'] + non_empty.count(3)
-                frequency['4'] = frequency['4'] + non_empty.count(4)
-                frequency['5'] = frequency['5'] + non_empty.count(5)
+                frequency['1'] = frequency['1'] + np.count_nonzero(non_empty==1)
+                frequency['2'] = frequency['2'] + np.count_nonzero(non_empty==2)
+                frequency['3'] = frequency['3'] + np.count_nonzero(non_empty==3)
+                frequency['4'] = frequency['4'] + np.count_nonzero(non_empty==4)
+                frequency['5'] = frequency['5'] + np.count_nonzero(non_empty==5)
                 most_frequent = list(frequency.values()).index(max(frequency.values()))
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data.transpose((1, 0))
@@ -153,12 +152,13 @@ def fill_missing(matrix_data, method=0, column=0):
                 frequency = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
                 non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
                 # frequency['0'] = frequency['0']+non_empty.count(0)
-                frequency['1'] = frequency['1'] + non_empty.count(1)
-                frequency['2'] = frequency['2'] + non_empty.count(2)
-                frequency['3'] = frequency['3'] + non_empty.count(3)
-                frequency['4'] = frequency['4'] + non_empty.count(4)
-                frequency['5'] = frequency['5'] + non_empty.count(5)
+                frequency['1'] = frequency['1'] + np.count_nonzero(non_empty==1)
+                frequency['2'] = frequency['2'] + np.count_nonzero(non_empty==2)
+                frequency['3'] = frequency['3'] + np.count_nonzero(non_empty==3)
+                frequency['4'] = frequency['4'] + np.count_nonzero(non_empty==4)
+                frequency['5'] = frequency['5'] + np.count_nonzero(non_empty==5)
                 most_frequent = list(frequency.values()).index(max(frequency.values()))
+                print(most_frequent)
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data
         else:
@@ -166,11 +166,11 @@ def fill_missing(matrix_data, method=0, column=0):
             for row in range(matrix_data.shape[0]):
                 non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
                 # frequency['0'] = frequency['0']+non_empty.count(0)
-                frequency['1'] = frequency['1'] + non_empty.count(1)
-                frequency['2'] = frequency['2'] + non_empty.count(2)
-                frequency['3'] = frequency['3'] + non_empty.count(3)
-                frequency['4'] = frequency['4'] + non_empty.count(4)
-                frequency['5'] = frequency['5'] + non_empty.count(5)
+                frequency['1'] = frequency['1'] + np.count_nonzero(non_empty==1)
+                frequency['2'] = frequency['2'] + np.count_nonzero(non_empty==2)
+                frequency['3'] = frequency['3'] + np.count_nonzero(non_empty==3)
+                frequency['4'] = frequency['4'] + np.count_nonzero(non_empty==4)
+                frequency['5'] = frequency['5'] + np.count_nonzero(non_empty==5)
             most_frequent = list(frequency.values()).index(max(frequency.values()))
             for row in range(matrix_data.shape[0]):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
