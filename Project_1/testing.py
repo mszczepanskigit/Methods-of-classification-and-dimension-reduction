@@ -288,7 +288,7 @@ if __name__ == "__main__":
             if it_tmp % iterations == 0:
                 learning_rate = learning_rate * 0.9
                 
-            tmp_sample = train_small[np.random.randint(len(train_small))]  # sample one random point
+            tmp_sample = non_missing[np.random.randint(len(non_missing))]  # sample one random point
             W_tmp = cp.deepcopy(W[tmp_sample[0], :])
             # update value
             W[tmp_sample[0],:] += learning_rate * 2 * (H[:,tmp_sample[1]] * (train_small[tmp_sample]-np.dot(W[tmp_sample[0], :], H[:,tmp_sample[1]]))-lam*W[tmp_sample[0],:])
