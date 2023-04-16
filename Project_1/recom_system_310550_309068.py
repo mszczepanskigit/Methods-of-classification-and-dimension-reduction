@@ -120,14 +120,15 @@ def fill_missing(matrix_data, method=0, column=0):
             frequency = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
             non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
             # frequency['0'] = frequency['0']+non_empty.count(0)
-            frequency['1'] = frequency['1'] + non_empty.count(1)
-            frequency['2'] = frequency['2'] + non_empty.count(2)
-            frequency['3'] = frequency['3'] + non_empty.count(3)
-            frequency['4'] = frequency['4'] + non_empty.count(4)
-            frequency['5'] = frequency['5'] + non_empty.count(5)
+            frequency['1'] = frequency['1'] + np.count_nonzero(non_empty==1)
+            frequency['2'] = frequency['2'] + np.count_nonzero(non_empty==2)
+            frequency['3'] = frequency['3'] + np.count_nonzero(non_empty==3)
+            frequency['4'] = frequency['4'] + np.count_nonzero(non_empty==4)
+            frequency['5'] = frequency['5'] + np.count_nonzero(non_empty==5)
+            all_probs = np.sum(list(frequency.values()))
             for key in frequency.keys():
-                frequency[key] = frequency[key] / np.sum(list(frequency.values()))
-            matrix_data[row, matrix_data[row,] == 0] = np.random.choice(np.array([0, 1, 2, 3, 4, 5]),
+                frequency[key] = frequency[key] / all_probs
+            matrix_data[row, matrix_data[row,] == 0] = np.random.choice(np.array([0,1, 2, 3, 4, 5]),
                                                                         matrix_data[row, matrix_data[row,] == 0].size,
                                                                         p=list(frequency.values()))
         return matrix_data
