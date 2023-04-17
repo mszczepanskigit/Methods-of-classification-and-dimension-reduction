@@ -8,7 +8,9 @@ import warnings
 
 """
 Execution:
-python recom_system_310550_309068.py -tr train_x -te test_x -a SVD1 -r yes.txt
+python recom_system_310550_309068.py -tr train_x -te test_x -a SVD1 -r result.txt
+
+python recom_system_310550_309068.py --train train_x --test test_x --alg SVD1 --result result.txt
 """
 
 
@@ -45,9 +47,9 @@ def fill_missing(matrix_data, method=0, column=0):
     Method:
         - 0 - fill with zeros
         - 1 - fill with mean (in every row)
-        - 2 - fill with random variable from N(mu,sd) but truncated (0,5)
+        - 2 - fill with random variable from N(mu,sd) but truncated to (0,5)
         - 3 - fill with random variable, probs based on data
-        - 4 - fill with the most frequent value, consider floor(r) (----row-----/column/matrix)
+        - 4 - fill with the most frequent value, consider floor(r) (in every row)
     """
     if method == 0:
         return matrix_data
@@ -156,7 +158,7 @@ if __name__ == "__main__":
     with open('./ratings.csv', 'r') as ratings, \
             open(f'{tests_file}', 'r') as test_file, \
             open(f'{trains_file}', 'r') as train_file:
-        ratings = np.genfromtxt(ratings, delimiter=',')[1:]  # Opening files
+        ratings = np.genfromtxt(ratings, delimiter=',')[1:]  # Opening files without header
         train_file = np.genfromtxt(train_file, delimiter=',')[1:]
         test_file = np.genfromtxt(test_file, delimiter=',')[1:]
 
@@ -187,17 +189,12 @@ if __name__ == "__main__":
     pointer_test_small = np.delete(pointer_test, empty_columns, axis=1)  # Removing empty columns in mask matrix
     train_small = np.delete(train, empty_columns, axis=1)  # Removing empty columns in train matrix
     test_small = np.delete(test, empty_columns, axis=1)  # Removing empty columns in test matrix
-    """print(matrix_small.shape)  # = (610, 9724)
-    print(pointer_train_small.shape)
-    print(pointer_test_small.shape)
-    print(train_small.shape)
-    print(test_small.shape)"""
-    # Proceeding
 
+    # Proceeding
     if alg == "NMF":
         matrix_temp = fill_missing(matrix_small, method=3)
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
-        nmf = NMF(n_components=9, init='nndsvda', random_state=666, max_iter=200)
+        nmf = NMF(n_components=1, init='nndsvda', random_state=666, max_iter=200)
         W = nmf.fit_transform(matrix_temp)
         H = nmf.components_
         X_nmf = np.dot(W, H)
@@ -206,7 +203,7 @@ if __name__ == "__main__":
 
     elif alg == "SVD1":
         matrix_temp = fill_missing(matrix_small, method=1)
-        SVD = TruncatedSVD(n_components=9, n_iter=1, random_state=666)
+        SVD = TruncatedSVD(n_components=2, n_iter=1, random_state=666)
         X_svd = SVD.fit_transform(matrix_temp)
         X_svd = SVD.inverse_transform(X_svd)
         rmse = RMSE(X_svd, test_small, pointer_test_small)
