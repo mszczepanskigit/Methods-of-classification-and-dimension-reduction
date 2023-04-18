@@ -145,9 +145,11 @@ def fill_missing(matrix_data, method=0, column=0):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data
         
-        elif method == 5:
+    elif method == 5:
         mean_row = np.zeros(matrix_data.shape)
         mean_column = np.zeros(matrix_data.shape)
+        missing = np.argwhere(matrix_data==0)
+        missing = list(map(tuple,missing))
         for row in range(matrix_data.shape[0]):
             non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
             mean_row[row,:] = np.mean(non_empty)
@@ -161,12 +163,11 @@ def fill_missing(matrix_data, method=0, column=0):
                 mean_column[row,:] = np.mean(non_empty)
         mean_column = mean_column.transpose((1,0))
         to_fill = mean_row*mean_column
-        missing = np.argwhere(matrix_data==0)
-        missing = list(map(tuple,missing))
+        matrix_data = matrix_data.transpose((1, 0))
         for ind in missing:
             i,j = ind
             matrix_data[i,j] = to_fill[i,j]
-        return matrix_data    
+        return matrix_data        
     else:
         pass
 
