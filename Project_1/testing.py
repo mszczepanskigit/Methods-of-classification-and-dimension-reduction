@@ -41,7 +41,7 @@ def RMSE(matrixx, testt, test_mask):
     return resultt
 
 
-def fill_missing(matrix_data, method=0, column=0):
+def fill_missing(matrix_data_input, method=0, column=0):
     """
     Method:
         - 0 - fill with zeros
@@ -51,6 +51,8 @@ def fill_missing(matrix_data, method=0, column=0):
         - 4 - fill with the most frequent value, consider floor(r) (----row-----/column/matrix)
         - 5 
     """
+    matrix_data = cp.deepcopy(matrix_data_input)
+    
     if method == 0:
         return matrix_data
 
