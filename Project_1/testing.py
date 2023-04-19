@@ -259,7 +259,7 @@ if __name__ == "__main__":
 
     elif alg == "SVD2":
         rmsess = []
-        matrix_temp = fill_missing(train_small, method=7)
+        matrix_temp = fill_missing(train_small, method=5)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
         print(f"Without performing algorithm, RMSE is {rmse0}")
