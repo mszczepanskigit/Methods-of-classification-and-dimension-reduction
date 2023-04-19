@@ -202,8 +202,8 @@ if __name__ == "__main__":
         result = rmse
 
     elif alg == "SVD1":
-        matrix_temp = fill_missing(matrix_small, method=1)
-        SVD = TruncatedSVD(n_components=2, n_iter=1, random_state=666)
+        matrix_temp = fill_missing(matrix_small, method=5)
+        SVD = TruncatedSVD(n_components=5, n_iter=1, random_state=666)
         X_svd = SVD.fit_transform(matrix_temp)
         X_svd = SVD.inverse_transform(X_svd)
         rmse = RMSE(X_svd, test_small, pointer_test_small)
