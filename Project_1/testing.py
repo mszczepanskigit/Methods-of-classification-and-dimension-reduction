@@ -164,7 +164,7 @@ def fill_missing(matrix_data_input, method=0, column=0):
             else:
                 mean_column[row,:] = np.mean(non_empty)
         mean_column = mean_column.transpose((1,0))
-        to_fill = 0.6*mean_row + 0.4*mean_column
+        to_fill = 0.66*mean_row + 0.34*mean_column
         matrix_data = matrix_data.transpose((1, 0))
         for ind in missing:
             i,j = ind
