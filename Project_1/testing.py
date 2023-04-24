@@ -286,33 +286,44 @@ if __name__ == "__main__":
             dist = np.linalg.norm(previous-matrix_temp, ord = 'fro')
 
     elif alg == "SGD":
-        r = 15  # num of components
-        steps = 10  # steps to be performed
-        iterations = 10000      # iterations for each step
-        learning_rate = 0.05   # learning rate
-        lam = 0.05      # lambda from equation
+        np.random.seed(666)
+        r = 1  # num of components
+        steps = 35  # steps to be performed
+        iterations = 50000      # iterations for each step
+        learning_rate = 0.007   # learning rate
+        lam = 0.00001   # lambda from equation
+        factor = 0.88
         
         it_tmp = 0 # number of current iteration
         
         non_missing = np.argwhere(train_small!=0)
         non_missing = list(map(tuple,non_missing))
-        
+        rmsess = []
         # initial matrices W,H
-        W = np.reshape(np.random.uniform(low=0,high=0.3,size=train_small.shape[0]*r),(train_small.shape[0], r))
-        H = np.reshape(np.random.uniform(1,2,size=r*train_small.shape[1]),(r, train_small.shape[1]))
-    
+        W = np.reshape(np.random.uniform(low=0,high=0.2,size=train_small.shape[0]*r),(train_small.shape[0], r))
+        H = np.reshape(np.random.uniform(0.9,2.8,size=r*train_small.shape[1]),(r, train_small.shape[1]))
+        
         for iteration in range(iterations*steps):
             it_tmp = it_tmp + 1
             if it_tmp % iterations == 0:
-                learning_rate = learning_rate * 0.9
-                
+                learning_rate = learning_rate * factor
+                    
             tmp_sample = non_missing[np.random.randint(len(non_missing))]  # sample one random point
             W_tmp = cp.deepcopy(W[tmp_sample[0], :])
             # update value
             W[tmp_sample[0],:] += learning_rate * 2 * (H[:,tmp_sample[1]] * (train_small[tmp_sample]-np.dot(W[tmp_sample[0], :], H[:,tmp_sample[1]]))-lam*W[tmp_sample[0],:])
             H[:,tmp_sample[1]] += learning_rate * 2 * (W_tmp*(train_small[tmp_sample]-np.dot(W_tmp,H[:,tmp_sample[1]]))-lam*H[:,tmp_sample[1]])
         Z_sgd = np.matmul(W,H)
-        print(RMSE(Z_sgd, test_small, pointer_test_small))
+        # rmse to be returned
+        r0 = RMSE(Z_sgd, test_small, pointer_test_small)
+        
+        #plt.figure(4,figsize=(13,5))
+        #plt.scatter([x for x in np.arange(1,21,1)], rmsess, color="green")
+        #plt.title(r"RMSE for SGD")
+        #plt.xlabel(r"components")
+        #plt.ylabel("RMSE")
+        #plt.xticks(np.arange(1,21,1))
+        #plt.show()
 
     else:
         sys.exit("Something went wrong.")
