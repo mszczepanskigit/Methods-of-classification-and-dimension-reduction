@@ -265,15 +265,15 @@ if __name__ == "__main__":
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
         print(f"Without performing algorithm, RMSE is {rmse0}")
-        r = 6       # number of components
-        steps_max = 100  # maximum number of iterations to be performed
-        epsilon = 0.5       # stop condition
+        r = 5       # number of components
+        steps_max = 9  # maximum number of iterations to be performed
+        #epsilon = 0.5       # stop condition
         step_it = 0     # current step
-        dist_init = np.linalg.norm(pointer_test_small, ord = 'fro')
-        dist = dist_init + 1
-        no_train = np.zeros(pointer_train_small.shape)+1-pointer_train_small
-        while step_it < steps_max and dist>0.001:
-            previous = cp.deepcopy(matrix_temp)
+        #dist_init = np.linalg.norm(pointer_test_small, ord = 'fro')
+        #dist = dist_init + 1
+        #no_train = np.zeros(pointer_train_small.shape)+1-pointer_train_small
+        while step_it < steps_max:
+            #previous = cp.deepcopy(matrix_temp)
             step_it = step_it + 1
             SVD = TruncatedSVD(n_components=r, n_iter=1, random_state=666)
             X_svd = SVD.fit_transform(matrix_temp)
@@ -283,7 +283,7 @@ if __name__ == "__main__":
             X_new = X_new + no_train*X_svd
             matrix_temp = cp.deepcopy(X_new)
             rmsess.append(RMSE(X_new, test_small, pointer_test_small))
-            dist = np.linalg.norm(previous-matrix_temp, ord = 'fro')
+            #dist = np.linalg.norm(previous-matrix_temp, ord = 'fro')
 
     elif alg == "SGD":
         np.random.seed(666)
