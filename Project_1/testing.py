@@ -216,12 +216,12 @@ if __name__ == "__main__":
 
     if alg == "NMF":
         rmsess = []
-        matrix_temp = fill_missing(train_small, method=4)
+        matrix_temp = fill_missing(train_small, method=5)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
-        print(f"Without performing algorithm, RMSE is {rmse0}")
+        print(f"{rmse0},")
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
-        for i in range(1, 101):
+        for i in range(1, 31):
             nmf = NMF(n_components=i, init='nndsvda', random_state=666,
                       max_iter=200)  # init = 'random', init = 'nndsvdar'
             W = nmf.fit_transform(matrix_temp)
@@ -229,35 +229,35 @@ if __name__ == "__main__":
             X_nmf = np.dot(W, H)
             rmse = RMSE(X_nmf, test_small, pointer_test_small)
             rmsess.append(rmse)
-            print(f"For n_comp: {i}, RMSE is {rmse}")
-        plt.figure(1)
+            print(f"{rmse},")
+        """plt.figure(1)
         plt.scatter([x for x in range(101)], rmsess, color="blue")
-        plt.title(r"RMSE for NMF, Method 4")
+        plt.title(r"RMSE for NMF, Method 5")
         plt.xlabel(r"Level of truncation $r$")
         plt.ylabel("RMSE")
         plt.xticks(np.arange(0, 101, step=1))
-        plt.show()
+        plt.show()"""
 
     elif alg == "SVD1":
         rmsess = []
-        matrix_temp = fill_missing(train_small, method=4)
+        matrix_temp = fill_missing(train_small, method=5)
         rmse0 = RMSE(matrix_temp, test_small, pointer_test_small)
         rmsess.append(rmse0)
-        print(f"Without performing algorithm, RMSE is {rmse0}")
+        print(f"{rmse0},")
         for i in range(1, 31):
             SVD = TruncatedSVD(n_components=i, n_iter=1, random_state=666)
             X_svd = SVD.fit_transform(matrix_temp)
             X_svd = SVD.inverse_transform(X_svd)
             rmse = RMSE(X_svd, test_small, pointer_test_small)
             rmsess.append(rmse)
-            print(f"For n_comp: {i}, RMSE is {rmse}")
-        plt.figure(2)
+            print(f"{rmse},")
+        """plt.figure(2)
         plt.scatter([x for x in range(31)], rmsess, color="green")
-        plt.title(r"RMSE for SVD1 within Method 4")
+        plt.title(r"RMSE for SVD1 within Method 5")
         plt.xlabel(r"Level of truncation $r$")
         plt.ylabel("RMSE")
-        plt.xticks(np.arange(0, 32, step=1))
-        plt.show()
+        plt.xticks(np.arange(0, 31, step=1))
+        plt.show()"""
 
     elif alg == "SVD2":
         rmsess = []
