@@ -5,6 +5,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.exceptions import ConvergenceWarning
 import sys
 import warnings
+import copy as cp
 
 """
 Execution:
@@ -42,7 +43,7 @@ def RMSE(matrix, test, test_mask):
     return result
 
 
-def fill_missing(matrix_data, method=0, column=0):
+def fill_missing(matrix_data_input, method=0, column=0):
     """
     Method:
         - 0 - fill with zeros
@@ -50,7 +51,10 @@ def fill_missing(matrix_data, method=0, column=0):
         - 2 - fill with random variable from N(mu,sd) but truncated to (0,5)
         - 3 - fill with random variable, probs based on data
         - 4 - fill with the most frequent value, consider floor(r) (in every row)
+        - 5 - fill with weighted average
     """
+    matrix_data = cp.deepcopy(matrix_data_input)
+    
     if method == 0:
         return matrix_data
 
@@ -144,6 +148,30 @@ def fill_missing(matrix_data, method=0, column=0):
             for row in range(matrix_data.shape[0]):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data
+        
+   elif method == 5:
+        mean_row = np.zeros(matrix_data.shape)
+        mean_column = np.zeros(matrix_data.shape)
+        missing = np.argwhere(matrix_data==0)
+        missing = list(map(tuple,missing))
+        for row in range(matrix_data.shape[0]):
+            non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
+            mean_row[row,:] = np.mean(non_empty)
+        matrix_data = matrix_data.transpose((1, 0))
+        mean_column = mean_column.transpose((1,0))
+        for row in range(matrix_data.shape[0]):
+            non_empty = np.floor(list(matrix_data[row, matrix_data[row,] != 0]))
+            if(len(non_empty)==0):
+                mean_column[row,:] = 0
+            else:
+                mean_column[row,:] = np.mean(non_empty)
+        mean_column = mean_column.transpose((1,0))
+        to_fill = 0.66*mean_row + 0.34*mean_column
+        matrix_data = matrix_data.transpose((1, 0))
+        for ind in missing:
+            i,j = ind
+            matrix_data[i,j] = to_fill[i,j]
+        return matrix_data        
     else:
         pass
 
@@ -210,12 +238,54 @@ if __name__ == "__main__":
         result = rmse
 
     elif alg == "SVD2":
-        matrix_temp = fill_missing(matrix_small, method=0)
-        result = len(alg) + 1
+        matrix_temp = fill_missing(train_small, method=5)
+        r = 5      # number of components
+        steps_max = 9  # maximum number of iterations to be performed
+        step_it = 0     # current step
+        rmsess = []
+        no_train = np.zeros(pointer_train_small.shape)+1-pointer_train_small
+        while step_it < steps_max:
+            previous = cp.deepcopy(matrix_temp)
+            step_it = step_it + 1
+            SVD = TruncatedSVD(n_components=r, n_iter=1, random_state=666)
+            X_svd = SVD.fit_transform(matrix_temp)
+            X_svd = SVD.inverse_transform(X_svd)   # result of SVD
+            X_new = cp.deepcopy(train_small)
+            # replace elements outside the training set with obtained values
+            X_new = X_new + no_train*X_svd
+            matrix_temp = cp.deepcopy(X_new)
+            rmsess.append(RMSE(X_new, test_small, pointer_test_small))
+        result = rmsess[len(rmsess)]    
+       
 
     elif alg == "SGD":
-        matrix_temp = fill_missing(matrix_small, method=0)
-        result = len(alg) + 2
+        np.random.seed(666)
+        r = 1  # num of components
+        steps = 35  # steps to be performed
+        iterations = 50000      # iterations for each step
+        learning_rate = 0.007   # learning rate
+        lam = 0.00001   # lambda from equation
+        factor = 0.88
+        it_tmp = 0 # number of current iteration
+        non_missing = np.argwhere(train_small!=0)
+        non_missing = list(map(tuple,non_missing))
+        # initial matrices W,H
+        W = np.reshape(np.random.uniform(low=0,high=0.2,size=train_small.shape[0]*r),(train_small.shape[0], r))
+        H = np.reshape(np.random.uniform(0.9,2.8,size=r*train_small.shape[1]),(r, train_small.shape[1]))
+        for iteration in range(iterations*steps):
+            it_tmp = it_tmp + 1
+            if it_tmp % iterations == 0:
+                learning_rate = learning_rate * factor
+                    
+            tmp_sample = non_missing[np.random.randint(len(non_missing))]  # sample one random point
+            W_tmp = cp.deepcopy(W[tmp_sample[0], :])
+            # update value
+            W[tmp_sample[0],:] += learning_rate * 2 * (H[:,tmp_sample[1]] * (train_small[tmp_sample]-np.dot(W[tmp_sample[0], :], H[:,tmp_sample[1]]))-lam*W[tmp_sample[0],:])
+            H[:,tmp_sample[1]] += learning_rate * 2 * (W_tmp*(train_small[tmp_sample]-np.dot(W_tmp,H[:,tmp_sample[1]]))-lam*H[:,tmp_sample[1]])
+        Z_sgd = np.matmul(W,H)
+        rmse = RMSE(Z_sgd, test_small, pointer_test_small)
+        result = rmse
+        
 
     else:
         sys.exit("Something went wrong.")
