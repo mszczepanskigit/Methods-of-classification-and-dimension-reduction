@@ -149,7 +149,7 @@ def fill_missing(matrix_data_input, method=0, column=0):
                 matrix_data[row, matrix_data[row,] == 0] = most_frequent
             return matrix_data
         
-   elif method == 5:
+    elif method == 5:
         mean_row = np.zeros(matrix_data.shape)
         mean_column = np.zeros(matrix_data.shape)
         missing = np.argwhere(matrix_data==0)
@@ -172,6 +172,7 @@ def fill_missing(matrix_data_input, method=0, column=0):
             i,j = ind
             matrix_data[i,j] = to_fill[i,j]
         return matrix_data        
+    
     else:
         pass
 
