@@ -221,9 +221,9 @@ if __name__ == "__main__":
 
     # Proceeding
     if alg == "NMF":
-        matrix_temp = fill_missing(matrix_small, method=3)
+        matrix_temp = fill_missing(train_small, method=5)
         warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
-        nmf = NMF(n_components=1, init='nndsvda', random_state=666, max_iter=200)
+        nmf = NMF(n_components=27, init='nndsvda', random_state=666, max_iter=200)
         W = nmf.fit_transform(matrix_temp)
         H = nmf.components_
         X_nmf = np.dot(W, H)
@@ -231,7 +231,7 @@ if __name__ == "__main__":
         result = rmse
 
     elif alg == "SVD1":
-        matrix_temp = fill_missing(matrix_small, method=5)
+        matrix_temp = fill_missing(train_small, method=5)
         SVD = TruncatedSVD(n_components=5, n_iter=1, random_state=666)
         X_svd = SVD.fit_transform(matrix_temp)
         X_svd = SVD.inverse_transform(X_svd)
@@ -256,7 +256,7 @@ if __name__ == "__main__":
             X_new = X_new + no_train*X_svd
             matrix_temp = cp.deepcopy(X_new)
             rmsess.append(RMSE(X_new, test_small, pointer_test_small))
-        result = rmsess[len(rmsess)]    
+        result = rmsess[-1]
        
 
     elif alg == "SGD":
