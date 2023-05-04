@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ea9995ab-5078-4e5a-b95b-fe40f24d6635" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/recom_system_310550_309068.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_1/yes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/yes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/NMF_boxplot.png" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/NMF_boxplot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_1/result.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Project_1/result.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/json_save_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/json_save_params.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/motif_123456_estimate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/motif_310550_309068_estimate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/motif_123456_generate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/motif_310550_309068_generate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/params_set1.json" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/params_set1.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,13 +51,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/MyOwnThings/Python_Projects/Methods-of-classification-and-dimension-reduction/Project_1"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\MyOwnThings\Python_Projects\Methods-of-classification-and-dimension-reduction\Project_1" />
@@ -58,8 +65,8 @@
       <recent name="D:\MyOwnThings\Python_Projects\Methods-of-classification-and-dimension-reduction\Project_1" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.recom_system_310550_309068">
-    <configuration name="problem2_1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.box_plot_nmf">
+    <configuration name="box_plot_nmf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Methods-of-classification-and-dimension-reduction" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -67,11 +74,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Problems_2" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Project_1" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Problems_2/problem2_1.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Project_1/box_plot_nmf.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -80,7 +87,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="problem2_2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="box_plot_svd1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Methods-of-classification-and-dimension-reduction" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,11 +95,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Problems_2" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Project_1" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Problems_2/problem2_2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Project_1/box_plot_svd1.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -166,11 +173,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.box_plot_nmf" />
+        <item itemvalue="Python.box_plot_svd1" />
         <item itemvalue="Python.recom_system_310550_309068" />
         <item itemvalue="Python.scratch" />
         <item itemvalue="Python.scratch (1)" />
-        <item itemvalue="Python.problem2_2" />
-        <item itemvalue="Python.problem2_1" />
       </list>
     </recent_temporary>
   </component>
