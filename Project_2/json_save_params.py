@@ -8,18 +8,23 @@ import argparse
 
 
 # position weight matrix:
-tmp = np.array([[3 / 8, 1 / 8, 2 / 8, 2 / 8],
-                [1 / 10, 2 / 10, 3 / 10, 4 / 10],
-                [1 / 7, 2 / 7, 1 / 7, 3 / 7]])
+lst = []
+for _ in range(30):
+    a, b, c, d = np.random.random(4)
+    s = a + b + c + d
+    a1, b1, c1, d1 = a / s, b / s, c / s, d / s
+    lst.append([a1, b1, c1, d1])
+
+tmp = np.array(lst)
 Theta = tmp.T
 
 # background distribution
 ThetaB = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
 
 params = {
-    "w": 3,
-    "alpha": 0.5,
-    "k": 10,
+    "w": 30,
+    "alpha": 0.8,
+    "k": 1000,
     "Theta": Theta.tolist(),
     "ThetaB": ThetaB.tolist()
 }
@@ -28,5 +33,5 @@ params = {
 # (potem po wczytaniu, wystarczy zamienic na macierz np.asarray(.))
 
 
-with open('params_set1.json', 'w') as outfile:
+with open('params_set_30x1000.json', 'w') as outfile:
     json.dump(params, outfile)

@@ -20,7 +20,7 @@ def ParseArguments():
 
 
 param_file, output_file = ParseArguments()
-# param_file = 'params_set1.json'
+#param_file = 'params_set1.json'
 
 with open(param_file, 'r') as inputfile:
     params = json.load(inputfile)
@@ -54,14 +54,12 @@ for i in range(k):
         pass
 
 # Musimy zapisac powyzszy X oraz alpha (k i w mozna potem odczytac z X)
-print(X)
 
 gen_data = {
     "alpha": alpha,
     "X": [[int(x) for x in sublist] for sublist in X]
 }
-
-# output_file = 'w.json'
+#output_file = 'w.json'
 
 with open(output_file, 'w') as outfile:
     json.dump(gen_data, outfile)
