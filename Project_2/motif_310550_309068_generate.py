@@ -12,7 +12,7 @@ def ParseArguments():
                         help='Parameters file (default: %(default)s)')
     parser.add_argument('--output',
                         '-o',
-                        default="generated_data.json",
+                        default="data_3x10.json",
                         required=False,
                         help='Generated data with specified parameters (default: %(default)s)')
     args = parser.parse_args()

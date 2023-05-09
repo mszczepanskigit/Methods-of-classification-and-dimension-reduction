@@ -7,7 +7,7 @@ import argparse
 
 def ParseArguments():
     parser = argparse.ArgumentParser(description="Motif generator")
-    parser.add_argument('--input', default="generated_data.json", required=False,
+    parser.add_argument('--input', default="data_3x10.json", required=False,
                         help='Plik z danymi  (default: %(default)s)')
     parser.add_argument('--output', default="estimated_params.json", required=False,
                         help='Tutaj zapiszemy wyestymowane parametry  (default: %(default)s)')
