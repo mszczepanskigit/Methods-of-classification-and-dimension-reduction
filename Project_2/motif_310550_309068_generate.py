@@ -7,7 +7,7 @@ def ParseArguments():
     parser = argparse.ArgumentParser(description="Motif generator")
     parser.add_argument('--params',
                         '-p',
-                        default="params_set1.json",
+                        default="params_set_3x10.json",
                         required=False,
                         help='Parameters file (default: %(default)s)')
     parser.add_argument('--output',
@@ -20,7 +20,7 @@ def ParseArguments():
 
 
 param_file, output_file = ParseArguments()
-#param_file = 'params_set1.json'
+#param_file = 'params_set_3x10.json'
 
 with open(param_file, 'r') as inputfile:
     params = json.load(inputfile)
