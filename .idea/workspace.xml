@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ea9995ab-5078-4e5a-b95b-fe40f24d6635" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_2/json_save_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/json_save_params_30.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_2/params_set_4x100.json" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/params_set_4x100.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_2/motif_310550_309068_estimate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Project_2/motif_310550_309068_estimate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,14 +45,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/MyOwnThings/Python_Projects/Methods-of-classification-and-dimension-reduction/Project_2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/MyOwnThings/Python_Projects/Methods-of-classification-and-dimension-reduction/Project_2&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\MyOwnThings\Python_Projects\Methods-of-classification-and-dimension-reduction\Project_2" />
       <recent name="D:\MyOwnThings\Python_Projects\Methods-of-classification-and-dimension-reduction\Project_1" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
