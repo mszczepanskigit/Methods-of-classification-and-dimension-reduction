@@ -1,6 +1,8 @@
 import json
 import numpy as np
 import argparse
+import sys
+import math
 
 
 def ParseArguments():
@@ -26,10 +28,9 @@ def ParseArguments():
 
 input_file, output_file, estimate_alpha = ParseArguments()
 
-# input_file = 'data_3x10.json'
-# output_file = 'result_3x10.json'
-# estimate_alpha = 'no'
-
+input_file = 'data_3x10.json'
+output_file = 'result_3x10.json'
+estimate_alpha = 'yes'
 
 with open(input_file, 'r') as inputfile:
     data = json.load(inputfile)
@@ -41,35 +42,55 @@ k, w = X.shape
 # Theta0 = vector of size 'w'
 # Theta = matrix of size 'd' x 'w'
 
-
 # methods for initial thetaB
 '''
     Method:
         - 0 - fill with probability of obtaining particular value based on all given data
-        - 1 - fill with probability of obtaining particular value based on randomly choosed  sequences
+        - 1 - fill with probability of obtaining particular value based on randomly chosen  sequences
                 in case alpha - known: we choose approximately (1-alpha)*w columns
                 can be done also for unknown alpha (but need to estimate alpha first)
         - 2 - uniform distribution
 '''
 
 
+# methods for initialing ThetaB
 def ThetaB_func(X, method=0):
     if method == 0:
         return np.asarray([(X == i + 1).sum() / (k * w) for i in range(4)])
     elif method == 1:
-        pass
+        quant_of_rows = math.floor((1 - alpha) * k)
+        taken_rows = np.random.choice(k, quant_of_rows, replace=False)
+        X_s = X[taken_rows]
+        return np.asarray([(X_s == i + 1).sum() / (k * w) for i in range(4)])
     elif method == 2:
-        pass
+        return np.array([0.25, 0.25, 0.25, 0.25])
     else:
-        pass
+        sys.exit("Error with filling ThetaB method")
 
 
-# methods for initial thetaA
+# methods for initialing Theta
 def Theta_func(X, method=0):
     Theta = np.zeros((4, w))
-    for j in range(w):
-        Theta[:, j] = np.asarray([(X[:, j] == i + 1).sum() / k for i in range(4)])
-    return Theta
+    if method == 0:
+        for position in range(w):
+            column = X[:, position]
+            for a in range(4):
+                Theta[a, position] = (column == a+1).sum() / (k * w)
+        return Theta
+    elif method == 1:
+        quant_of_rows = math.floor(alpha * k)
+        taken_rows = np.random.choice(k, quant_of_rows, replace=False)
+        X_s = X[taken_rows]
+        for position in range(w):
+            column = X_s[:, position]
+            for a in range(4):
+                Theta[a, position] = (column == a+1).sum() / (k * quant_of_rows)
+        print(Theta)
+        return Theta
+    elif method == 2:
+        return Theta + 0.25
+    else:
+        sys.exit("Error with filling Theta method")
 
 
 def Qi_func(X, alpha, Theta, ThetaB):
@@ -100,10 +121,10 @@ def final_dtv(Theta_org, ThetaB_org, Theta_est, ThetaB_est):
     return result / (1 + w)
 
 
-def EM(X, alpha, steps=500):
+def EM(X, alpha, steps=1):
     k, w = X.shape
-    Theta = Theta_func(X)
-    ThetaB = ThetaB_func(X)
+    Theta = Theta_func(X, method=2)
+    ThetaB = ThetaB_func(X, method=2)
     dtv_Theta_previous = 10
     p = 0
     while p < steps:
@@ -136,10 +157,10 @@ def EM(X, alpha, steps=500):
     return p, Theta, ThetaB
 
 
-def EM_with_alpha(X, steps=500):
+def EM_with_alpha(X, steps=1):
     k, w = X.shape
-    Theta = Theta_func(X)
-    ThetaB = ThetaB_func(X)
+    Theta = Theta_func(X, method=2)
+    ThetaB = ThetaB_func(X, method=2)
     alpha = np.random.uniform(0, 1)
     dtv_Theta_previous = 10
     dtv_alpha_previous = 10
@@ -167,8 +188,9 @@ def EM_with_alpha(X, steps=500):
 
         dtv_Theta_next = final_dtv(Theta, ThetaB, New_Theta, New_ThetaB)
         dtv_alpha_next = dtv(alpha, New_alpha)
-        if (dtv_Theta_previous - dtv_Theta_next < 1 / 1000 and
-                dtv_alpha_previous - dtv_alpha_next < 1 / 1000): break
+        """if (dtv_Theta_previous - dtv_Theta_next < 1 / 1000 and
+                dtv_alpha_previous - dtv_alpha_next < 1 / 100):
+            break"""
 
         Theta = New_Theta
         ThetaB = New_ThetaB
@@ -176,7 +198,7 @@ def EM_with_alpha(X, steps=500):
         dtv_alpha_previous = dtv_alpha_next
         alpha = New_alpha
         p += 1
-    return (p, Theta, ThetaB, alpha)
+    return p, Theta, ThetaB, alpha
 
 
 if __name__ == "__main__":
@@ -186,12 +208,10 @@ if __name__ == "__main__":
         p, Theta, ThetaB = EM(X, alpha)
 
     estimated_params = {
-        "alpha": alpha,  # "przepisujemy" to alpha, one nie bylo estymowane
-        "Theta": Theta.tolist(),  # westymowane
-        "ThetaB": ThetaB.tolist()  # westymowane
+        "alpha": alpha,
+        "Theta": Theta.tolist(),
+        "ThetaB": ThetaB.tolist()
     }
 
     with open(output_file, 'w') as outfile:
         json.dump(estimated_params, outfile)
-
-
