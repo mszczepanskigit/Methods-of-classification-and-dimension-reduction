@@ -5,14 +5,15 @@ import pandas as pd
 import csv
 import matplotlib.pyplot as plt
 
-w = [3, 4]
-k = [10, 100]
-estimate_alpha = 'yes'
+w = [3, 4, 5, 10, 25, 50, 70, 100]
+k = [10, 100, 1000]
+estimate_alpha = 'no'
 methodd = 0
 
 alpha = 0.5
-alpha_list = [0.2]
+alpha_list = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 
+np.random.seed(1)
 
 def generate_theta(w):
     lst = []
