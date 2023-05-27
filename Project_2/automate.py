@@ -1,15 +1,17 @@
 import numpy as np
 import sys
 import math
+import pandas as pd
+import csv
 import matplotlib.pyplot as plt
 
-w = [3, 4, 30]
-k = [10, 100, 1000]
-estimate_alpha = 'no'
+w = [3, 4]
+k = [10, 100]
+estimate_alpha = 'yes'
 methodd = 0
 
 alpha = 0.5
-alpha_list = [0.2, 0.8]
+alpha_list = [0.2]
 
 
 def generate_theta(w):
@@ -203,12 +205,10 @@ def EM_with_alpha(X, steps=1, m=methodd):
 
 
 if __name__ == "__main__":
-    T = generate_theta(w[0])
-    print(T)
-    X = generate_data(T[1], T[0], 5, 0.5)
-    print(X)
 
-    dataframe = np.zeros((len(w) * len(k) * len(alpha_list), 7))
+    dataframe = pd.DataFrame(np.zeros((len(w) * len(k) * len(alpha_list), 7)))
+    dataframe.columns = ['w', 'k', 'init_alpha', 'is_estimated', 'list_of_dtv', 'iters', 'final_dtv']
+    dataframe_param3 = []
     i = 0
     for W in w:
         for K in k:
@@ -218,7 +218,17 @@ if __name__ == "__main__":
                 if estimate_alpha == 'no':
                     params = EM(X, a, steps=100)
                     fdt = final_dtv(T[1], T[0], params[1], params[2])
-                    dataframe[i,] = [W, K, a, estimate_alpha, params[3], params[0], fdt]
+                    dataframe.iloc[i] = [W, K, a, estimate_alpha, 0, params[0], fdt]
+                    dataframe_param3.append(params[3])
                 else:
                     params = EM_with_alpha(X, steps=100)
+                    fdt = final_dtv(T[1], T[0], params[1], params[2])
+                    dataframe.iloc[i] = [W, K, a, params[4], 0, params[0], fdt]
+                    dataframe_param3.append(params[3])
                 i += 1
+
+    dataframe.to_csv("dataframe.csv")
+    with open("dataframe_param3.csv", 'w') as f:
+        write = csv.writer(f)
+        write.writerows(dataframe_param3)
+
