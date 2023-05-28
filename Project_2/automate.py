@@ -3,18 +3,15 @@ import sys
 import math
 import pandas as pd
 import csv
-import matplotlib.pyplot as plt
 
-# w = [3, 4, 5, 10, 25, 50, 70, 100]
-# k = [10, 100, 1000]
-w = [3, 4, 5, 10]
+w = [3, 4, 10, 30, 50, 100]
 k = [10, 100, 1000]
-estimate_alpha = 'no'
+
+estimate_alpha = 'yes'
 methodd = 0
 
-# alpha_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-alpha_list = [0.1, 0.5, 0.9]
-np.random.seed(2)
+alpha_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+np.random.seed(666)
 
 
 def generate_theta(w):
@@ -253,12 +250,9 @@ if __name__ == "__main__":
                     fdt = final_dtv(T[1], T[0], params[1], params[2])
                     dataframe.iloc[i] = [W, K, a, params[4], params[0], fdt]
                     dataframe_param3.append(params[3])
-                if i <= 4:
-                    print(T)
-                    print(X)
                 i += 1
 
-    dataframe.to_csv("test.csv")
-    with open("test_param3.csv", 'w') as f:
+    dataframe.to_csv(f"dataframe_alpha_{estimate_alpha}_method_{methodd}.csv")
+    with open(f"param3_alpha_{estimate_alpha}_method_{methodd}.csv", 'w') as f:
         write = csv.writer(f)
         write.writerows(dataframe_param3)
