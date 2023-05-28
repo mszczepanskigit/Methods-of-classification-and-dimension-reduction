@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 w = [3, 4, 5, 10, 25, 50, 70, 100]
 k = [10, 100, 1000]
-estimate_alpha = 'no'
-methodd = 0
+estimate_alpha = 'yes'
+methodd = 1
 
 alpha = 0.5
 alpha_list = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
@@ -85,7 +85,6 @@ def Theta_func(X, method=0):
             column = X_s[:, position]
             for a in range(4):
                 Theta[a, position] = (column == a + 1).sum() / (k * quant_of_rows)
-        print(Theta)
         return Theta
     elif method == 2:
         return Theta + 0.25
@@ -228,8 +227,7 @@ if __name__ == "__main__":
                     dataframe_param3.append(params[3])
                 i += 1
 
-    dataframe.to_csv("dataframe.csv")
-    with open("dataframe_param3.csv", 'w') as f:
+    dataframe.to_csv("dataframe_alpha_m1.csv")
+    with open("dataframe_param3_alpha_m1.csv", 'w') as f:
         write = csv.writer(f)
         write.writerows(dataframe_param3)
-
