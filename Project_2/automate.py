@@ -4,13 +4,16 @@ import math
 import pandas as pd
 import csv
 
-w = [3, 4, 10, 30, 50, 100]
+#w = [3, 4, 5, 6, 7, 8, 9]
+#k = [10, 11, 12, 13]
+
+w = [3, 4, 5, 10, 30, 50, 100]
 k = [10, 100, 1000]
 
-estimate_alpha = 'yes'
+estimate_alpha = 'no'
 methodd = 1
 
-alpha_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+alpha_list = [0.1, 0.25, 0.5, 0.75, 0.9]
 np.random.seed(666)
 
 
@@ -63,7 +66,7 @@ def ThetaB_func(X, alpha, method=methodd):
         ThetaB = np.asarray([A, C, G, T]) / (k * w)
         return ThetaB
     elif method == 1:
-        quant_of_rows = np.max([math.floor((1-alpha) * k), 1])
+        quant_of_rows = np.max([math.floor((1 - alpha) * k), 1])
         taken_rows = np.random.choice(k, quant_of_rows, replace=False)
         X_s = X[taken_rows]
         assert X_s.shape[0] == quant_of_rows
@@ -118,20 +121,35 @@ def Theta_func(X, alpha, method=methodd):
         sys.exit("Error with filling Theta method")
 
 
-def Qi_func(X, alpha, Theta, ThetaB):
-    k, w = X.shape
-    Qi = np.zeros((2, k))
-    for i in np.arange(k):
-        tmp = np.ones(w)
-        tmpB = np.ones(w)
-        for j in np.arange(w):
-            tmp[j] = Theta[X[i, j] - 1, j]
-            tmpB[j] = ThetaB[X[i, j] - 1]
+def Qi_func(X, alpha, Theta, ThetaB, ask=0):
+    if ask == 0:
+        k, w = X.shape
+        Qi = np.zeros((2, k))
+        for i in np.arange(k):
+            tmp = np.ones(w)
+            tmpB = np.ones(w)
+            for j in np.arange(w):
+                tmp[j] = Theta[X[i, j] - 1, j]
+                tmpB[j] = ThetaB[X[i, j] - 1]
 
-        Qi[0, i] = (1 - alpha) * tmpB.prod()
-        Qi[1, i] = alpha * tmp.prod()
-        Qi[:, i] = Qi[:, i] / (Qi[0, i] + Qi[1, i])
-    return Qi
+            Qi[0, i] = (1 - alpha) * tmpB.prod()
+            Qi[1, i] = alpha * tmp.prod()
+            Qi[:, i] = Qi[:, i] / (Qi[0, i] + Qi[1, i])
+        return Qi
+    else:
+        k, w = X.shape
+        Qi = np.zeros((2, k))
+        for i in np.arange(k):
+            tmp = np.ones(w)
+            tmpB = np.ones(w)
+            for j in np.arange(w):
+                tmp[j] = Theta[int(X[i, j] - 1), j]
+                tmpB[j] = ThetaB[int(X[i, j] - 1)]
+            Qi[0, i] = (1 - alpha) * tmpB.prod()
+            #print(f"Q_i: {Qi[0, i]}, 1-alfa: {1-alpha}, tmpB_prod: {tmpB.prod()}")
+            Qi[1, i] = alpha * tmp.prod()
+            Qi[:, i] = Qi[:, i] / (Qi[0, i] + Qi[1, i])
+        return Qi
 
 
 def dtv(p, q):
@@ -194,7 +212,11 @@ def EM_with_alpha(X, steps=100, m=methodd):
     dtv_alpha_previous = 10
     p = 0
     while p < steps:
-        Qi = Qi_func(X, alpha, Theta, ThetaB)
+        # Qi = Qi_func(X, alpha, Theta, ThetaB)
+        if w == 6 and k == 11 and p == 58:
+            Qi = Qi_func(X, alpha, Theta, ThetaB, ask=1)
+        else:
+            Qi = Qi_func(X, alpha, Theta, ThetaB)
         lambB = w * Qi[0, :].sum()
         lamb = Qi[1, :].sum()
         New_ThetaB = np.ones(4)
