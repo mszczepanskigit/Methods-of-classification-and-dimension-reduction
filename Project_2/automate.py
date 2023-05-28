@@ -8,7 +8,7 @@ w = [3, 4, 10, 30, 50, 100]
 k = [10, 100, 1000]
 
 estimate_alpha = 'yes'
-methodd = 0
+methodd = 1
 
 alpha_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 np.random.seed(666)
@@ -63,7 +63,7 @@ def ThetaB_func(X, alpha, method=methodd):
         ThetaB = np.asarray([A, C, G, T]) / (k * w)
         return ThetaB
     elif method == 1:
-        quant_of_rows = math.floor((1 - alpha) * k)
+        quant_of_rows = np.max([math.floor((1-alpha) * k), 1])
         taken_rows = np.random.choice(k, quant_of_rows, replace=False)
         X_s = X[taken_rows]
         assert X_s.shape[0] == quant_of_rows
@@ -97,7 +97,7 @@ def Theta_func(X, alpha, method=methodd):
             Theta[3, position] = T / k
         return Theta
     elif method == 1:
-        quant_of_rows = math.floor(alpha * k)
+        quant_of_rows = np.max([math.floor(alpha * k), 1])
         taken_rows = np.random.choice(k, quant_of_rows, replace=False)
         X_s = X[taken_rows]
         for position in range(w):
