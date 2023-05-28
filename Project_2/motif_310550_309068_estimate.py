@@ -28,10 +28,6 @@ def ParseArguments():
 
 input_file, output_file, estimate_alpha = ParseArguments()
 
-input_file = 'data_3x10.json'
-output_file = 'result_3x10.json'
-estimate_alpha = 'yes'
-
 with open(input_file, 'r') as inputfile:
     data = json.load(inputfile)
 
@@ -55,13 +51,27 @@ k, w = X.shape
 
 # methods for initialing ThetaB
 def ThetaB_func(X, method=0):
+    k, w = X.shape
     if method == 0:
-        return np.asarray([(X == i + 1).sum() / (k * w) for i in range(4)])
+        A = (X == 1).sum()
+        C = (X == 2).sum()
+        G = (X == 3).sum()
+        T = (X == 4).sum()
+        assert np.isclose(math.floor(k * w), math.floor(A + C + G + T))
+        ThetaB = np.asarray([A, C, G, T]) / (k * w)
+        return ThetaB
     elif method == 1:
         quant_of_rows = math.floor((1 - alpha) * k)
         taken_rows = np.random.choice(k, quant_of_rows, replace=False)
         X_s = X[taken_rows]
-        return np.asarray([(X_s == i + 1).sum() / (k * w) for i in range(4)])
+        assert X_s.shape[0] == quant_of_rows
+        A = (X_s == 1).sum()
+        C = (X_s == 2).sum()
+        G = (X_s == 3).sum()
+        T = (X_s == 4).sum()
+        assert np.isclose(A + C + G + T, math.floor(quant_of_rows * w))
+        ThetaB = np.asarray([A, C, G, T]) / (quant_of_rows * w)
+        return ThetaB
     elif method == 2:
         return np.array([0.25, 0.25, 0.25, 0.25])
     else:
@@ -70,12 +80,20 @@ def ThetaB_func(X, method=0):
 
 # methods for initialing Theta
 def Theta_func(X, method=0):
+    k, w = X.shape
     Theta = np.zeros((4, w))
     if method == 0:
         for position in range(w):
             column = X[:, position]
-            for a in range(4):
-                Theta[a, position] = (column == a+1).sum() / (k * w)
+            A = (column == 1).sum()
+            C = (column == 2).sum()
+            G = (column == 3).sum()
+            T = (column == 4).sum()
+            assert np.isclose(A + C + G + T, k)
+            Theta[0, position] = A / k
+            Theta[1, position] = C / k
+            Theta[2, position] = G / k
+            Theta[3, position] = T / k
         return Theta
     elif method == 1:
         quant_of_rows = math.floor(alpha * k)
@@ -83,9 +101,15 @@ def Theta_func(X, method=0):
         X_s = X[taken_rows]
         for position in range(w):
             column = X_s[:, position]
-            for a in range(4):
-                Theta[a, position] = (column == a+1).sum() / (k * quant_of_rows)
-        print(Theta)
+            A = (column == 1).sum()
+            C = (column == 2).sum()
+            G = (column == 3).sum()
+            T = (column == 4).sum()
+            assert np.isclose((A + C + G + T), quant_of_rows)
+            Theta[0, position] = A / quant_of_rows
+            Theta[1, position] = C / quant_of_rows
+            Theta[2, position] = G / quant_of_rows
+            Theta[3, position] = T / quant_of_rows
         return Theta
     elif method == 2:
         return Theta + 0.25
@@ -121,10 +145,10 @@ def final_dtv(Theta_org, ThetaB_org, Theta_est, ThetaB_est):
     return result / (1 + w)
 
 
-def EM(X, alpha, steps=1):
+def EM(X, alpha, steps=100):
     k, w = X.shape
-    Theta = Theta_func(X, method=2)
-    ThetaB = ThetaB_func(X, method=2)
+    Theta = Theta_func(X, method=0)
+    ThetaB = ThetaB_func(X, method=0)
     dtv_Theta_previous = 10
     p = 0
     while p < steps:
@@ -159,8 +183,8 @@ def EM(X, alpha, steps=1):
 
 def EM_with_alpha(X, steps=1):
     k, w = X.shape
-    Theta = Theta_func(X, method=2)
-    ThetaB = ThetaB_func(X, method=2)
+    Theta = Theta_func(X, method=0)
+    ThetaB = ThetaB_func(X, method=0)
     alpha = np.random.uniform(0, 1)
     dtv_Theta_previous = 10
     dtv_alpha_previous = 10
