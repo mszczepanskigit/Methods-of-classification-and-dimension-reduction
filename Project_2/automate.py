@@ -4,16 +4,16 @@ import math
 import pandas as pd
 import csv
 
-#w = [3, 4, 5, 6, 7, 8, 9]
-#k = [10, 11, 12, 13]
+# w = [3, 4, 5, 6, 7, 8, 9]
+# k = [10, 11, 12, 13]
 
-w = [3, 4, 5, 10, 30, 50, 100]
-k = [10, 100, 1000]
+w = 3*[6]
+k = 3*[2000]
 
 estimate_alpha = 'no'
-methodd = 1
+methodd = 0
 
-alpha_list = [0.1, 0.25, 0.5, 0.75, 0.9]
+alpha_list = [0.1, 0.5, 0.9]
 np.random.seed(666)
 
 
@@ -146,7 +146,7 @@ def Qi_func(X, alpha, Theta, ThetaB, ask=0):
                 tmp[j] = Theta[int(X[i, j] - 1), j]
                 tmpB[j] = ThetaB[int(X[i, j] - 1)]
             Qi[0, i] = (1 - alpha) * tmpB.prod()
-            #print(f"Q_i: {Qi[0, i]}, 1-alfa: {1-alpha}, tmpB_prod: {tmpB.prod()}")
+            # print(f"Q_i: {Qi[0, i]}, 1-alfa: {1-alpha}, tmpB_prod: {tmpB.prod()}")
             Qi[1, i] = alpha * tmp.prod()
             Qi[:, i] = Qi[:, i] / (Qi[0, i] + Qi[1, i])
         return Qi
@@ -255,7 +255,14 @@ def EM_with_alpha(X, steps=100, m=methodd):
 if __name__ == "__main__":
     dataframe = pd.DataFrame(np.zeros((len(w) * len(k) * len(alpha_list), 6)))
     dataframe.columns = ['w', 'k', 'init_alpha', 'alpha', 'iters', 'final_dtv']
-    dataframe_param3 = []
+    dataframe['w'] = dataframe['w'].astype(int)
+    dataframe['k'] = dataframe['k'].astype(int)
+    dataframe['init_alpha'] = dataframe['init_alpha'].astype(float)
+    dataframe['alpha'] = dataframe['alpha'].astype(float)
+    dataframe['iters'] = dataframe['iters'].astype(int)
+    dataframe['final_dtv'] = dataframe['final_dtv'].astype(float)
+    # dataframe_param3 = []
+    dataframe_param3 = pd.DataFrame(np.zeros((len(w) * len(k) * len(alpha_list), 100)))
     i = 0
     for W in w:
         for K in k:
@@ -266,15 +273,13 @@ if __name__ == "__main__":
                     params = EM(X, a)
                     fdt = final_dtv(T[1], T[0], params[1], params[2])
                     dataframe.iloc[i] = [W, K, a, estimate_alpha, params[0], fdt]
-                    dataframe_param3.append(params[3])
+                    dataframe_param3.iloc[i] = params[3]
                 else:
                     params = EM_with_alpha(X)
                     fdt = final_dtv(T[1], T[0], params[1], params[2])
                     dataframe.iloc[i] = [W, K, a, params[4], params[0], fdt]
-                    dataframe_param3.append(params[3])
+                    dataframe_param3.iloc[i] = params[3]
                 i += 1
 
-    dataframe.to_csv(f"dataframe_alpha_{estimate_alpha}_method_{methodd}.csv")
-    with open(f"param3_alpha_{estimate_alpha}_method_{methodd}.csv", 'w') as f:
-        write = csv.writer(f)
-        write.writerows(dataframe_param3)
+    dataframe.to_csv(f"#4_dataframe_alpha_{estimate_alpha}_method_{methodd}.csv")
+    dataframe_param3.to_csv(f"#4_param3_alpha_{estimate_alpha}_method_{methodd}.csv")
