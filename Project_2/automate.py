@@ -198,7 +198,7 @@ def EM(X, alpha, steps=iters, m=methodd):
                 New_Theta[letter, j] = tmp / lamb
 
         dtv_Theta_next = final_dtv(Theta, ThetaB, New_Theta, New_ThetaB)
-        """f dtv_Theta_previous - dtv_Theta_next < 1 / 1000:
+        """if dtv_Theta_previous - dtv_Theta_next < 1 / 1000:
             break"""
 
         Theta = New_Theta

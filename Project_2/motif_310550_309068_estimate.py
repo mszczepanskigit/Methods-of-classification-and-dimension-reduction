@@ -43,7 +43,7 @@ k, w = X.shape
     Method:
         - 0 - fill with probability of obtaining particular value based on all given data
         - 1 - fill with probability of obtaining particular value based on randomly chosen  sequences
-                in case alpha - known: we choose approximately (1-alpha)*w columns
+                in case alpha - known: we choose approximately (1-alpha)*k rows
                 can be done also for unknown alpha (but need to estimate alpha first)
         - 2 - uniform distribution
 '''
@@ -181,11 +181,11 @@ def EM(X, alpha, steps=100):
     return p, Theta, ThetaB
 
 
-def EM_with_alpha(X, steps=1):
+def EM_with_alpha(X, steps=100):
     k, w = X.shape
     Theta = Theta_func(X, method=0)
     ThetaB = ThetaB_func(X, method=0)
-    alpha = np.random.uniform(0, 1)
+    alpha = 0.5
     dtv_Theta_previous = 10
     dtv_alpha_previous = 10
     p = 0
@@ -212,9 +212,9 @@ def EM_with_alpha(X, steps=1):
 
         dtv_Theta_next = final_dtv(Theta, ThetaB, New_Theta, New_ThetaB)
         dtv_alpha_next = dtv(alpha, New_alpha)
-        """if (dtv_Theta_previous - dtv_Theta_next < 1 / 1000 and
+        if (dtv_Theta_previous - dtv_Theta_next < 1 / 1000 and
                 dtv_alpha_previous - dtv_alpha_next < 1 / 100):
-            break"""
+            break
 
         Theta = New_Theta
         ThetaB = New_ThetaB
