@@ -7,14 +7,20 @@ import csv
 # w = [3, 4, 5, 6, 7, 8, 9]
 # k = [10, 11, 12, 13]
 
-w = 3*[6]
-k = 3*[2000]
+name = 'alpha1_test_2-0.9'
 
-estimate_alpha = 'no'
+w = [10]
+k = 50*[1000]
+
+estimate_alpha = 'yes'
 methodd = 0
 
-alpha_list = [0.1, 0.5, 0.9]
+iters = 100
+
+alpha_list = [0.9]
 np.random.seed(666)
+#alf = np.random.uniform(0, 1)
+alf = 0.5
 
 
 def generate_theta(w):
@@ -78,7 +84,8 @@ def ThetaB_func(X, alpha, method=methodd):
         ThetaB = np.asarray([A, C, G, T]) / (quant_of_rows * w)
         return ThetaB
     elif method == 2:
-        return np.array([0.25, 0.25, 0.25, 0.25])
+        ThetaB = np.array([0.25, 0.25, 0.25, 0.25])
+        return ThetaB
     else:
         sys.exit("Error with filling ThetaB method")
 
@@ -164,7 +171,7 @@ def final_dtv(Theta_org, ThetaB_org, Theta_est, ThetaB_est):
     return result / (1 + w)
 
 
-def EM(X, alpha, steps=100, m=methodd):
+def EM(X, alpha, steps=iters, m=methodd):
     dTV_tmp = []
     k, w = X.shape
     Theta = Theta_func(X, alpha, method=m)
@@ -202,21 +209,17 @@ def EM(X, alpha, steps=100, m=methodd):
     return p, Theta, ThetaB, dTV_tmp, alpha
 
 
-def EM_with_alpha(X, steps=100, m=methodd):
+def EM_with_alpha(X, steps=iters, m=methodd):
     dTV_tmp = []
     k, w = X.shape
-    alpha = np.random.uniform(0, 1)
+    alpha = alf
     Theta = Theta_func(X, alpha, method=m)
     ThetaB = ThetaB_func(X, alpha, method=m)
     dtv_Theta_previous = 10
     dtv_alpha_previous = 10
     p = 0
     while p < steps:
-        # Qi = Qi_func(X, alpha, Theta, ThetaB)
-        if w == 6 and k == 11 and p == 58:
-            Qi = Qi_func(X, alpha, Theta, ThetaB, ask=1)
-        else:
-            Qi = Qi_func(X, alpha, Theta, ThetaB)
+        Qi = Qi_func(X, alpha, Theta, ThetaB)
         lambB = w * Qi[0, :].sum()
         lamb = Qi[1, :].sum()
         New_ThetaB = np.ones(4)
@@ -262,11 +265,12 @@ if __name__ == "__main__":
     dataframe['iters'] = dataframe['iters'].astype(int)
     dataframe['final_dtv'] = dataframe['final_dtv'].astype(float)
     # dataframe_param3 = []
-    dataframe_param3 = pd.DataFrame(np.zeros((len(w) * len(k) * len(alpha_list), 100)))
+    dataframe_param3 = pd.DataFrame(np.zeros((len(w) * len(k) * len(alpha_list), 1)))
     i = 0
     for W in w:
         for K in k:
             for a in alpha_list:
+                print(f"Iteration {i} out of {(len(w) * len(k) * len(alpha_list))}")
                 T = generate_theta(W)
                 X = generate_data(T[1], T[0], K, a)
                 if estimate_alpha == 'no':
@@ -278,8 +282,8 @@ if __name__ == "__main__":
                     params = EM_with_alpha(X)
                     fdt = final_dtv(T[1], T[0], params[1], params[2])
                     dataframe.iloc[i] = [W, K, a, params[4], params[0], fdt]
-                    dataframe_param3.iloc[i] = params[3]
+                    dataframe_param3.iloc[i] = np.abs(params[4]-a)
                 i += 1
 
-    dataframe.to_csv(f"#4_dataframe_alpha_{estimate_alpha}_method_{methodd}.csv")
-    dataframe_param3.to_csv(f"#4_param3_alpha_{estimate_alpha}_method_{methodd}.csv")
+    #dataframe.to_csv(f"{name}_dataframe.csv")
+    dataframe_param3.to_csv(f"{name}_alpha_results.csv")
