@@ -52,7 +52,7 @@ k, w = X.shape
 # methods for initialing ThetaB
 def ThetaB_func(X, method=0):
     k, w = X.shape
-    if method == 0:
+    if method == 0:  # chosen method
         A = (X == 1).sum()
         C = (X == 2).sum()
         G = (X == 3).sum()
@@ -82,7 +82,7 @@ def ThetaB_func(X, method=0):
 def Theta_func(X, method=0):
     k, w = X.shape
     Theta = np.zeros((4, w))
-    if method == 0:
+    if method == 0:  # chosen method
         for position in range(w):
             column = X[:, position]
             A = (column == 1).sum()
