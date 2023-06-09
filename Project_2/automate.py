@@ -7,20 +7,20 @@ import csv
 # w = [3, 4, 5, 6, 7, 8, 9]
 # k = [10, 11, 12, 13]
 
-name = 'alpha1_test_2-0.9'
+name = '0-ing_alpha_test'
 
-w = [10]
-k = 50*[1000]
+w = [20]
+k = 100*[20]
 
 estimate_alpha = 'yes'
-methodd = 0
+methodd = 1
 
 iters = 100
 
-alpha_list = [0.9]
+alpha_list = [0.1,0.5,0.9]
 np.random.seed(666)
-#alf = np.random.uniform(0, 1)
-alf = 0.5
+alf = np.random.uniform(0, 1)
+#alf = 0.5
 
 
 def generate_theta(w):
